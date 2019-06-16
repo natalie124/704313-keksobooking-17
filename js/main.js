@@ -1,7 +1,11 @@
 'use strict';
 
-var map = document.querySelector('.map'); // блок с картой объявлений
 var AD_QUANTITY = 8; // количество объявлений
+var PIN_Y_MIN = 130; // минимальная координата позиции метки по Y
+var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
+var PIN_OFFSET_X = 25; // смещение метки по X (1/2 ширины метки)
+var PIN_OFFSET_Y = 35; // смещение метки по Y (1/2 высоты метки)
+var map = document.querySelector('.map'); // блок с картой объявлений
 
 /**
  * удаляет класс у элемента
@@ -81,9 +85,8 @@ function getRandElement(array) {
  */
 function drawPins(quantity) {
 
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
   var pins = map.querySelector('.map__pins');
-  var pin = pins.querySelector('.map__pin');
   var fragment = document.createDocumentFragment();
   var ads = getArrayAds(quantity);
   /**
@@ -106,26 +109,43 @@ function drawPins(quantity) {
 
     for (var i = 0; i < number; i++) {
       var ad = {
-        author: 'img/avatars/user' + addZeros(avatarNumbers[i]) + '.png',
-        offer: getRandElement(housingTypes),
+        author: {
+          avatar: 'img/avatars/user' + addZeros(avatarNumbers[i]) + '.png'
+        },
+        offer: {
+          type: getRandElement(housingTypes)
+        },
         location: {
-          x: getRandomInt(0 + pin.offsetWidth / 2, map.offsetWidth - pin.offsetWidth / 2),
-          y: getRandomInt(130 + pin.offsetHeight / 2, 630 - pin.offsetHeight / 2)
+          x: getRandomInt(0 + PIN_OFFSET_X, map.offsetWidth - PIN_OFFSET_X),
+          y: getRandomInt(PIN_Y_MIN + PIN_OFFSET_Y, PIN_Y_MAX - PIN_OFFSET_Y)
         }
       };
       arrayAds.push(ad);
     }
     return arrayAds;
   }
+  /**
+ * получает разметку c данными объявления
+ *
+ * @param {object} object объект с данными объявления
+ * @return {object} готовая разметка
+ */
+  function getPin(object) {
+
+    var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+    var element = pinTemplate.cloneNode(true);
+
+    element.querySelector('img').src = object.author.avatar;
+    element.querySelector('img').alt = object.offer.type;
+    element.style.left = object.location.x + 'px';
+    element.style.top = object.location.y + 'px';
+
+    return element;
+  }
 
   for (var i = 0; i < quantity; i++) {
 
-    var element = pinTemplate.cloneNode(true);
-    element.querySelector('img').src = ads[i].author;
-    element.querySelector('img').alt = ads[i].offer;
-    element.style.left = ads[i].location.x + 'px';
-    element.style.top = ads[i].location.y + 'px';
-    fragment.appendChild(element);
+    fragment.appendChild(getPin(ads[i]));
   }
 
   return pins.appendChild(fragment);
