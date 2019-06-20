@@ -5,8 +5,14 @@ var PIN_Y_MIN = 130; // минимальная координата позици
 var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
 var PIN_OFFSET_X = 25; // смещение метки по X (1/2 ширины метки)
 var PIN_OFFSET_Y = 35; // смещение метки по Y (1/2 высоты метки)
+var MAIN_PIN_DEFAULT_X = 570;  // координата метки по умолчанию, ось X
+var MAIN_PIN_DEFAULT_Y = 375;  // координата метки по умолчанию, ось Y
 var map = document.querySelector('.map'); // блок с картой объявлений
-
+var mainPin = map.querySelector('.map__pin--main');  // блок с меткой
+var adForm = document.querySelector('.ad-form');  // блок с формой
+var formElements = document.querySelectorAll('fieldset');  // блоки с элементами форм на странице
+var mapFilter = map.querySelector('.map__filters');  // блок с фильтром
+var mapFilters = mapFilter.querySelectorAll('.map__filter');  // блоки с элементами фильтра
 /**
  * удаляет класс у элемента
  *
@@ -16,6 +22,65 @@ var map = document.querySelector('.map'); // блок с картой объяв
  */
 function removeClass(element, className) {
   return element.classList.remove(className);
+}
+/**
+ * добавляет класс элементу
+ *
+ * @param {object} element DOM-элемент, которому добавляем класс
+ * @param {string} className название класса, который добавляем
+ * @return {object} элемент
+ */
+function addClass(element, className) {
+  return element.classList.remove(className);
+}
+/**
+ * добавляет класс элементу
+ *
+ * @param {object} element DOM-элемент, которому добавляем класс
+ * @param {string} className название класса, который добавляем
+ * @return {object} элемент
+ */
+function toggleClass(element, className) {
+  return element.classList.toggle(className);
+}
+/**
+ * добавляет атрибут элементу
+ *
+ * @param {object} item DOM-элемент/ты, которому/ым добавляем атрибут
+ * @param {string} name название атрибута
+ * @param {string} value значение атрибута
+ * @return {object} элемент
+ */
+function addAttribute(item, name, value) {
+
+  if (typeof(item.length) === 'number') {
+    for (var i = 0; i < item.length ; i++) {
+      item[i].setAttribute(name, value);
+    }
+  } else {
+    item.setAttribute(name, value);
+  }
+
+  return item;
+}
+/**
+ * удаляет атрибут элементa
+ *
+ * @param {object} item DOM-элемент/ты, у которого/ых удаляем атрибут
+ * @param {string} name название атрибута
+ * @return {object} элемент
+ */
+function removeAttribute(item, name) {
+
+  if (typeof(item.length) === 'number') {
+    for (var i = 0; i < item.length ; i++) {
+      item[i].removeAttribute(name);
+    }
+  } else {
+    item.removeAttribute(name);
+  }
+
+  return item;
 }
 /**
  * получает рандомное число в диапазоне
@@ -78,25 +143,50 @@ function getRandElement(array) {
   return array[rand];
 }
 /**
+ * определяет координату метки по оси X
+ *
+ * @param {object} element DOM-элемент, у которого смотрим координату
+ * @return {string} координата метки по оси X
+ */
+function getCoordinateX(element) {
+  return element.style.left.split('').reverse().slice(2).reverse().join('');
+}
+/**
+ * определяет координату метки по оси Y
+ *
+ * @param {object} element DOM-элемент, у которого смотрим координату
+ * @return {string} координата метки по оси Y
+ */
+function getCoordinateY(element) {
+  return element.style.top.split('').reverse().slice(2).reverse().join('');
+}
+/**
+ * записывает координаты метки в поле address
+ *
+ * @param {string} x координата по X
+ * @param {string} y координата по Y
+ * @return {string} строка с координатами метки
+ */
+function addAddress(x, y) {
+  return address.value = x + ', ' + y;
+}
+/**
  * рисует метки объявлений
  *
  * @param {number} quantity количество объявлений
  * @return {object} добавляем фрагмент с метками объявлений на страницу
  */
 function drawPins(quantity) {
-
-
   var pins = map.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var ads = getArrayAds(quantity);
-  /**
+/**
  * получает массив с объявлениями
  *
  * @param {number} number число объявлений
  * @return {array} массив с объявлениями
  */
   function getArrayAds(number) {
-
     var avatarNumbers = shuffleArray(getNumberArray(1, quantity));
     var housingTypes = [
       'palace',
@@ -124,7 +214,7 @@ function drawPins(quantity) {
     }
     return arrayAds;
   }
-  /**
+/**
  * получает разметку c данными объявления
  *
  * @param {object} object объект с данными объявления
@@ -150,6 +240,36 @@ function drawPins(quantity) {
 
   return pins.appendChild(fragment);
 }
+/**
+ * активирует Букинг
+ *
+ */
+function activateBooking() {
 
-drawPins(AD_QUANTITY); // рисуем объявления на странице
-removeClass(map, 'map--faded'); // показываем блок с объявлениями на странице
+  removeClass(map, 'map--faded');
+  removeClass(adForm, 'ad-form--disabled');
+  removeClass(mapFilter, 'ad-form--disabled');
+
+  removeAttribute(mapFilters, 'disabled');
+  removeAttribute(formElements, 'disabled');
+
+  drawPins(AD_QUANTITY);
+}
+/**
+ * обработчик события mouseup
+ *
+ */
+function onMainPinMouseup() {
+  activateBooking();
+  addAddress(getCoordinateX(mainPin), getCoordinateY(mainPin));
+  mainPin.removeEventListener('mouseup', onMainPinMouseup);
+}
+// скрываем фильтр
+addClass(mapFilter, 'ad-form--disabled');
+// добавляем атрибут disabled элементам формы
+addAttribute(formElements, 'disabled', 'disabled');
+addAttribute(mapFilters, 'disabled', 'disabled');
+// добавляем адрес метки по умолчанию
+addAddress(MAIN_PIN_DEFAULT_X, MAIN_PIN_DEFAULT_Y);
+// добавляеи событие mouseup для метки
+mainPin.addEventListener('mouseup', onMainPinMouseup);
