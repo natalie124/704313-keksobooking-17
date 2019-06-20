@@ -1,21 +1,66 @@
 'use strict';
 
 var AD_QUANTITY = 8; // количество объявлений
+
 var PIN_Y_MIN = 130; // минимальная координата позиции метки по Y
 var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
 var PIN_OFFSET_X = 25; // смещение метки по X (1/2 ширины метки)
-var PIN_OFFSET_Y = 35; // смещение метки по Y (1/2 высоты метки)
+var PIN_OFFSET_Y = 70; // смещение метки по Y (высотa метки)
+
 var map = document.querySelector('.map'); // блок с картой объявлений
+var mainPin = map.querySelector('.map__pin--main'); // блок с меткой
+
+var adForm = document.querySelector('.ad-form'); // блок с формой
+var formElements = document.querySelectorAll('fieldset'); // блоки с элементами форм на странице
+var address = adForm.querySelector('#address'); // поле с адресом метки
+
+var mapFilter = map.querySelector('.map__filters'); // блок с фильтром
+var mapFilters = mapFilter.querySelectorAll('.map__filter'); // блоки с элементами фильтра
 
 /**
  * удаляет класс у элемента
  *
  * @param {object} element DOM-элемент, у которого удаляем класс
  * @param {string} className название класса, который удаляем
- * @return {object} элемент
  */
 function removeClass(element, className) {
-  return element.classList.remove(className);
+  element.classList.remove(className);
+}
+/**
+ * добавляет класс элементу
+ *
+ * @param {object} element DOM-элемент, которому добавляем класс
+ * @param {string} className название класса, который добавляем
+ */
+function addClass(element, className) {
+  element.classList.add(className);
+}
+/**
+ * добавляет атрибут элементу
+ *
+ * @param {object} item DOM-элемент/ты, которому/ым добавляем атрибут
+ * @param {string} name название атрибута
+ * @param {string} value значение атрибута
+ */
+function addAttribute(item, name, value) {
+  if (item.length > 0) {
+    for (var i = 0; i < item.length; i++) {
+      item[i].setAttribute(name, value);
+    }
+  }
+}
+/**
+ * удаляет атрибут элементa
+ *
+ * @param {object} item DOM-элемент/ты, у которого/ых удаляем атрибут
+ * @param {string} name название атрибута
+ */
+function removeAttribute(item, name) {
+  if (item.length > 0) {
+    for (var i = 0; i < item.length; i++) {
+      item[i].removeAttribute(name);
+    }
+  }
 }
 /**
  * получает рандомное число в диапазоне
@@ -78,25 +123,31 @@ function getRandElement(array) {
   return array[rand];
 }
 /**
+ * определяет координаты элемента
+ *
+ * @param {object} element DOM - элемент
+ * @return {string} строка с координатами элемента
+ */
+function getCoordinates(element) {
+  return element.offsetLeft + ', ' + element.offsetTop;
+}
+/**
  * рисует метки объявлений
  *
  * @param {number} quantity количество объявлений
  * @return {object} добавляем фрагмент с метками объявлений на страницу
  */
 function drawPins(quantity) {
-
-
   var pins = map.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var ads = getArrayAds(quantity);
   /**
- * получает массив с объявлениями
- *
- * @param {number} number число объявлений
- * @return {array} массив с объявлениями
- */
+   * получает массив с объявлениями
+   *
+   * @param {number} number число объявлений
+   * @return {array} массив с объявлениями
+  */
   function getArrayAds(number) {
-
     var avatarNumbers = shuffleArray(getNumberArray(1, quantity));
     var housingTypes = [
       'palace',
@@ -125,11 +176,11 @@ function drawPins(quantity) {
     return arrayAds;
   }
   /**
- * получает разметку c данными объявления
- *
- * @param {object} object объект с данными объявления
- * @return {object} готовая разметка
- */
+   * получает разметку c данными объявления
+   *
+   * @param {object} object объект с данными объявления
+   * @return {object} готовая разметка
+  */
   function getPin(object) {
 
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -150,6 +201,37 @@ function drawPins(quantity) {
 
   return pins.appendChild(fragment);
 }
+/**
+ * активирует Букинг
+ *
+ */
+function activateBooking() {
 
-drawPins(AD_QUANTITY); // рисуем объявления на странице
-removeClass(map, 'map--faded'); // показываем блок с объявлениями на странице
+  removeClass(map, 'map--faded');
+  removeClass(adForm, 'ad-form--disabled');
+  removeClass(mapFilter, 'ad-form--disabled');
+
+  removeAttribute(mapFilters, 'disabled');
+  removeAttribute(formElements, 'disabled');
+
+  drawPins(AD_QUANTITY);
+}
+/**
+ * обработчик события mouseup
+ *
+ */
+function onMainPinMouseup() {
+  activateBooking();
+  address.value = getCoordinates(mainPin);
+  mainPin.removeEventListener('mouseup', onMainPinMouseup);
+}
+
+// скрываем фильтр
+addClass(mapFilter, 'ad-form--disabled');
+// добавляем атрибут disabled элементам формы
+addAttribute(formElements, 'disabled', 'disabled');
+addAttribute(mapFilters, 'disabled', 'disabled');
+// добавляем адрес метки по умолчанию
+address.value = getCoordinates(mainPin);
+// добавляеи событие mouseup для метки
+mainPin.addEventListener('mouseup', onMainPinMouseup);
