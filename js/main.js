@@ -1,18 +1,23 @@
 'use strict';
 
 var AD_QUANTITY = 8; // количество объявлений
+
 var PIN_Y_MIN = 130; // минимальная координата позиции метки по Y
 var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
 var PIN_OFFSET_X = 25; // смещение метки по X (1/2 ширины метки)
 var PIN_OFFSET_Y = 35; // смещение метки по Y (1/2 высоты метки)
-var MAIN_PIN_DEFAULT_X = 570;  // координата метки по умолчанию, ось X
-var MAIN_PIN_DEFAULT_Y = 375;  // координата метки по умолчанию, ось Y
+
+var MAIN_PIN_DEFAULT_X = 570; // координата метки по умолчанию, ось X
+var MAIN_PIN_DEFAULT_Y = 375; // координата метки по умолчанию, ось Y
+
 var map = document.querySelector('.map'); // блок с картой объявлений
-var mainPin = map.querySelector('.map__pin--main');  // блок с меткой
-var adForm = document.querySelector('.ad-form');  // блок с формой
-var formElements = document.querySelectorAll('fieldset');  // блоки с элементами форм на странице
-var mapFilter = map.querySelector('.map__filters');  // блок с фильтром
-var mapFilters = mapFilter.querySelectorAll('.map__filter');  // блоки с элементами фильтра
+var mainPin = map.querySelector('.map__pin--main'); // блок с меткой
+
+var adForm = document.querySelector('.ad-form'); // блок с формой
+var formElements = document.querySelectorAll('fieldset'); // блоки с элементами форм на странице
+
+var mapFilter = map.querySelector('.map__filters'); // блок с фильтром
+var mapFilters = mapFilter.querySelectorAll('.map__filter'); // блоки с элементами фильтра
 /**
  * удаляет класс у элемента
  *
@@ -34,16 +39,6 @@ function addClass(element, className) {
   return element.classList.remove(className);
 }
 /**
- * добавляет класс элементу
- *
- * @param {object} element DOM-элемент, которому добавляем класс
- * @param {string} className название класса, который добавляем
- * @return {object} элемент
- */
-function toggleClass(element, className) {
-  return element.classList.toggle(className);
-}
-/**
  * добавляет атрибут элементу
  *
  * @param {object} item DOM-элемент/ты, которому/ым добавляем атрибут
@@ -53,8 +48,8 @@ function toggleClass(element, className) {
  */
 function addAttribute(item, name, value) {
 
-  if (typeof(item.length) === 'number') {
-    for (var i = 0; i < item.length ; i++) {
+  if (typeof (item.length) === 'number') {
+    for (var i = 0; i < item.length; i++) {
       item[i].setAttribute(name, value);
     }
   } else {
@@ -72,8 +67,8 @@ function addAttribute(item, name, value) {
  */
 function removeAttribute(item, name) {
 
-  if (typeof(item.length) === 'number') {
-    for (var i = 0; i < item.length ; i++) {
+  if (typeof (item.length) === 'number') {
+    for (var i = 0; i < item.length; i++) {
       item[i].removeAttribute(name);
     }
   } else {
@@ -168,7 +163,9 @@ function getCoordinateY(element) {
  * @return {string} строка с координатами метки
  */
 function addAddress(x, y) {
-  return address.value = x + ', ' + y;
+  var address = adForm.querySelector('#address');
+  address.value = x + ', ' + y;
+  return address;
 }
 /**
  * рисует метки объявлений
@@ -180,12 +177,12 @@ function drawPins(quantity) {
   var pins = map.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var ads = getArrayAds(quantity);
-/**
- * получает массив с объявлениями
- *
- * @param {number} number число объявлений
- * @return {array} массив с объявлениями
- */
+  /**
+   * получает массив с объявлениями
+   *
+   * @param {number} number число объявлений
+   * @return {array} массив с объявлениями
+  */
   function getArrayAds(number) {
     var avatarNumbers = shuffleArray(getNumberArray(1, quantity));
     var housingTypes = [
@@ -214,12 +211,12 @@ function drawPins(quantity) {
     }
     return arrayAds;
   }
-/**
- * получает разметку c данными объявления
- *
- * @param {object} object объект с данными объявления
- * @return {object} готовая разметка
- */
+  /**
+   * получает разметку c данными объявления
+   *
+   * @param {object} object объект с данными объявления
+   * @return {object} готовая разметка
+  */
   function getPin(object) {
 
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -264,6 +261,7 @@ function onMainPinMouseup() {
   addAddress(getCoordinateX(mainPin), getCoordinateY(mainPin));
   mainPin.removeEventListener('mouseup', onMainPinMouseup);
 }
+
 // скрываем фильтр
 addClass(mapFilter, 'ad-form--disabled');
 // добавляем атрибут disabled элементам формы
