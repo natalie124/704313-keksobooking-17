@@ -13,10 +13,27 @@ var mainPin = map.querySelector('.map__pin--main'); // блок с меткой
 var adForm = document.querySelector('.ad-form'); // блок с формой
 var formElements = document.querySelectorAll('fieldset'); // блоки с элементами форм на странице
 var address = adForm.querySelector('#address'); // поле с адресом метки
+var houseType = adForm.querySelector('#type'); // поле тип жилья
+var timein = adForm.querySelector('#timein'); // поле дата заезда
+var timeout = adForm.querySelector('#timeout'); // поле дата выезда
 
 var mapFilter = map.querySelector('.map__filters'); // блок с фильтром
 var mapFilters = mapFilter.querySelectorAll('.map__filter'); // блоки с элементами фильтра
-
+// данные о типах жилья
+var housingTypes = {
+  palace: {
+    price: 10000
+  },
+  flat: {
+    price: 1000
+  },
+  house: {
+    price: 5000
+  },
+  bungalo: {
+    price: 0
+  }
+};
 /**
  * удаляет класс у элемента
  *
@@ -149,13 +166,6 @@ function drawPins(quantity) {
   */
   function getArrayAds(number) {
     var avatarNumbers = shuffleArray(getNumberArray(1, quantity));
-    var housingTypes = [
-      'palace',
-      'flat',
-      'house',
-      'bungalo'
-    ];
-
     var arrayAds = [];
 
     for (var i = 0; i < number; i++) {
@@ -217,7 +227,7 @@ function activateBooking() {
   drawPins(AD_QUANTITY);
 }
 /**
- * обработчик события mouseup
+ * обработчик события mouseup (для метки)
  *
  */
 function onMainPinMouseup() {
@@ -225,7 +235,33 @@ function onMainPinMouseup() {
   address.value = getCoordinates(mainPin);
   mainPin.removeEventListener('mouseup', onMainPinMouseup);
 }
+/**
+ * обработчик события change (для поля type)
+ *
+ * @param {object} evt объект события
+ */
+function onHouseTypeChange(evt) {
+  var housePrice = adForm.querySelector('#price');
 
+  housePrice.min = housingTypes[evt.target.value].price;
+  housePrice.placeholder = housingTypes[evt.target.value].price;
+}
+/**
+ * обработчик события change (для поля timein)
+ *
+ * @param {object} evt объект события
+ */
+function onTimeinChange(evt) {
+  timeout.value = evt.target.value;
+}
+/**
+ * обработчик события change (для поля timeout)
+ *
+ * @param {object} evt объект события
+ */
+function onTimeoutChange(evt) {
+  timein.value = evt.target.value;
+}
 // скрываем фильтр
 addClass(mapFilter, 'ad-form--disabled');
 // добавляем атрибут disabled элементам формы
@@ -235,3 +271,9 @@ addAttribute(mapFilters, 'disabled', 'disabled');
 address.value = getCoordinates(mainPin);
 // добавляеи событие mouseup для метки
 mainPin.addEventListener('mouseup', onMainPinMouseup);
+// добавляем событие change для поля тип жилья
+houseType.addEventListener('change', onHouseTypeChange);
+// добавляем событие change для поля дата заезда
+timein.addEventListener('change', onTimeinChange);
+// добавляем событие change для поля дата выезда
+timeout.addEventListener('change', onTimeoutChange);
