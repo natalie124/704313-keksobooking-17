@@ -143,10 +143,12 @@ function getRandElement(array) {
  * определяет координаты элемента
  *
  * @param {object} element DOM - элемент
+ * @param {number} offsetLeft - смещение координаты по оси X
+ * @param {number} offsetTop - смещение координаты по оси Y
  * @return {string} строка с координатами элемента
  */
-function getCoordinates(element) {
-  return element.offsetLeft + ', ' + element.offsetTop;
+function getCoordinates(element, offsetLeft, offsetTop) {
+  return Math.round(element.offsetLeft + offsetLeft) + ', ' + Math.round(element.offsetTop + offsetTop);
 }
 /**
  * рисует метки объявлений
@@ -227,13 +229,76 @@ function activateBooking() {
   drawPins(AD_QUANTITY);
 }
 /**
- * обработчик события mouseup (для метки)
+ * обработчик события mousedown (для метки)
+ * @param {object} evt объект события
  *
  */
-function onMainPinMouseup() {
-  activateBooking();
-  address.value = getCoordinates(mainPin);
-  mainPin.removeEventListener('mouseup', onMainPinMouseup);
+function onMainPinMouseDown(evt) {
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  /**
+   * обработчик события mousemove (для метки)
+   * @param {object} moveEvt объект события
+   *
+  */
+  function onMouseMove(moveEvt) {
+    var mainPinLeft = mainPin.offsetLeft;
+    var mainPinTop = mainPin.offsetTop;
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    moveEvt.preventDefault();
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    mainPinTop = (mainPinTop - shift.y);
+    mainPinLeft = (mainPinLeft - shift.x);
+
+    if (mainPinLeft < 0) {
+      mainPinLeft = 0;
+    }
+    if (mainPinLeft > map.offsetWidth - mainPin.offsetWidth) {
+      mainPinLeft = map.offsetWidth - mainPin.offsetWidth;
+    }
+    if (mainPin.offsetTop < PIN_Y_MIN - mainPin.offsetHeight) {
+      mainPinTop = PIN_Y_MIN - mainPin.offsetHeight;
+    }
+    if (mainPinTop > PIN_Y_MAX - mainPin.offsetHeight) {
+      mainPinTop = PIN_Y_MAX - mainPin.offsetHeight;
+    }
+
+    mainPin.style.left = mainPinLeft + 'px';
+    mainPin.style.top = mainPinTop + 'px';
+  }
+  /**
+   * обработчик события mouseup (для метки)
+   * @param {object} upEvt объект события
+   *
+  */
+  function onMouseUp(upEvt) {
+    upEvt.preventDefault();
+
+    address.value = getCoordinates(mainPin, mainPin.offsetWidth / 2, mainPin.offsetHeight);
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  evt.preventDefault();
+
+  if (map.classList.contains('map--faded')) {
+    activateBooking();
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 }
 /**
  * обработчик события change (для поля type)
@@ -268,9 +333,9 @@ addClass(mapFilter, 'ad-form--disabled');
 addAttribute(formElements, 'disabled', 'disabled');
 addAttribute(mapFilters, 'disabled', 'disabled');
 // добавляем адрес метки по умолчанию
-address.value = getCoordinates(mainPin);
-// добавляеи событие mouseup для метки
-mainPin.addEventListener('mouseup', onMainPinMouseup);
+address.value = getCoordinates(mainPin, 0, 0);
+// добавляеи событие mousedown для метки
+mainPin.addEventListener('mousedown', onMainPinMouseDown);
 // добавляем событие change для поля тип жилья
 houseType.addEventListener('change', onHouseTypeChange);
 // добавляем событие change для поля дата заезда
