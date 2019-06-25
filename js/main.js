@@ -148,7 +148,7 @@ function getRandElement(array) {
  * @return {string} строка с координатами элемента
  */
 function getCoordinates(element, offsetLeft, offsetTop) {
-  return (element.offsetLeft + offsetLeft) + ', ' + (element.offsetTop + offsetTop);
+  return Math.round(element.offsetLeft + offsetLeft) + ', ' + Math.round(element.offsetTop + offsetTop);
 }
 /**
  * рисует метки объявлений
@@ -267,11 +267,11 @@ function onMainPinMouseDown(evt) {
     if (mainPinLeft > map.offsetWidth - mainPin.offsetWidth) {
       mainPinLeft = map.offsetWidth - mainPin.offsetWidth;
     }
-    if (mainPin.offsetTop < 0) {
-      mainPinTop = 0;
+    if (mainPin.offsetTop < PIN_Y_MIN - mainPin.offsetHeight) {
+      mainPinTop = PIN_Y_MIN - mainPin.offsetHeight;
     }
-    if (mainPinTop > map.offsetHeight - mainPin.offsetHeight * 2) {
-      mainPinTop = map.offsetHeight - mainPin.offsetHeight * 2;
+    if (mainPinTop > PIN_Y_MAX - mainPin.offsetHeight) {
+      mainPinTop = PIN_Y_MAX - mainPin.offsetHeight;
     }
 
     mainPin.style.left = mainPinLeft + 'px';
