@@ -2,11 +2,7 @@
 
 (function () {
 
-  var deps = {
-    util: window.util
-  };
-
-  var TYPES = { // типы объявлений
+  var types = { // типы объявлений
     palace: {
       price: 10000
     },
@@ -21,7 +17,7 @@
     }
   };
 
-  var Selector = {
+  var selectors = {
     MAIN_PIN: '.map__pin--main',
 
     FORM: '.ad-form',
@@ -32,14 +28,14 @@
     MIN_PRICE: '#price'
   };
 
-  var mainPin = document.querySelector(Selector.MAIN_PIN); // блок с меткой
+  var mainPin = document.querySelector(selectors.MAIN_PIN); // блок с меткой
 
-  var form = document.querySelector(Selector.FORM); // блок с формой
-  var address = form.querySelector(Selector.ADDRESS); // поле с адресом метки
-  var type = form.querySelector(Selector.TYPE); // поле тип жилья
-  var timein = form.querySelector(Selector.TIMEIN); // поле дата заезда
-  var timeout = form.querySelector(Selector.TIMEOUT); // поле дата выезда
-  var minPrice = form.querySelector(Selector.MIN_PRICE); // минимальная цена
+  var form = document.querySelector(selectors.FORM); // блок с формой
+  var address = form.querySelector(selectors.ADDRESS); // поле с адресом метки
+  var type = form.querySelector(selectors.TYPE); // поле тип жилья
+  var timein = form.querySelector(selectors.TIMEIN); // поле дата заезда
+  var timeout = form.querySelector(selectors.TIMEOUT); // поле дата выезда
+  var minPrice = form.querySelector(selectors.MIN_PRICE); // минимальная цена
 
   /**
    * обработчик события change (для поля type)
@@ -48,8 +44,8 @@
    */
   function onHouseTypeChange(evt) {
 
-    minPrice.min = TYPES[evt.target.value].price;
-    minPrice.placeholder = TYPES[evt.target.value].price;
+    minPrice.min = types[evt.target.value].price;
+    minPrice.placeholder = types[evt.target.value].price;
   }
   /**
    * обработчик события change (для поля timein)
@@ -68,7 +64,7 @@
     timein.value = evt.target.value;
   }
 
-  address.value = deps.util.getCoordinates(mainPin, 0, 0);
+  address.value = window.util.getCoordinates(mainPin, 0, 0);
 
   type.addEventListener('change', onHouseTypeChange);
   // добавляем событие change для поля дата заезда

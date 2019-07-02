@@ -2,18 +2,12 @@
 
 (function () {
 
-  var deps = { // зависимости
-    util: window.util,
-    pins: window.pins,
-    backend: window.backend
-  };
-
-  var ClassName = {
+  var classNames = {
     FORM_DISABLED: 'ad-form--disabled',
     MAP_FADED: 'map--faded'
   };
 
-  var Selector = {
+  var selectors = {
     MAIN: 'main',
 
     MAP: '.map',
@@ -35,20 +29,20 @@
   var PIN_Y_MIN = 130; // минимальная координата позиции метки по Y
   var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
 
-  var map = document.querySelector(Selector.MAP); // блок с картой объявлений
-  var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
+  var map = document.querySelector(selectors.MAP); // блок с картой объявлений
+  var mainPin = map.querySelector(selectors.MAIN_PIN); // блок с меткой
 
-  var form = document.querySelector(Selector.FORM); // блок с формой
-  var formItems = document.querySelectorAll(Selector.FORM_ITEM); // блоки с элементами форм на странице
-  var address = form.querySelector(Selector.ADDRESS); // поле с адресом метки
+  var form = document.querySelector(selectors.FORM); // блок с формой
+  var formItems = document.querySelectorAll(selectors.FORM_ITEM); // блоки с элементами форм на странице
+  var address = form.querySelector(selectors.ADDRESS); // поле с адресом метки
 
-  var filter = map.querySelector(Selector.FILTER); // блок с фильтром
-  var filterItems = filter.querySelectorAll(Selector.FILTER_ITEM); // блоки с элементами фильтра
+  var filter = map.querySelector(selectors.FILTER); // блок с фильтром
+  var filterItems = filter.querySelectorAll(selectors.FILTER_ITEM); // блоки с элементами фильтра
 
-  var errorLocation = document.querySelector(Selector.MAIN);
-  var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR);
+  var errorLocation = document.querySelector(selectors.MAIN);
+  var errorTemplate = document.querySelector(selectors.ERROR_TEMPLATE).content.querySelector(selectors.ERROR);
   var error = errorTemplate.cloneNode(true);
-  var errorButton = error.querySelector(Selector.ERROR_BUTTON);
+  var errorButton = error.querySelector(selectors.ERROR_BUTTON);
 
   /**
    * активирует Букинг
@@ -56,25 +50,25 @@
    */
   function activateBooking() {
 
-    deps.util.removeClass(map, ClassName.MAP_FADED);
-    deps.util.removeClass(form, ClassName.FORM_DISABLED);
-    deps.util.removeClass(filter, ClassName.FORM_DISABLED);
+    window.util.removeClass(map, classNames.MAP_FADED);
+    window.util.removeClass(form, classNames.FORM_DISABLED);
+    window.util.removeClass(filter, classNames.FORM_DISABLED);
 
-    deps.util.removeDisabled(filterItems);
-    deps.util.removeDisabled(formItems);
+    window.util.removeDisabled(filterItems);
+    window.util.removeDisabled(formItems);
 
-    deps.backend.load(deps.pins.drawPins, onError);
+    window.backend.load(window.pins.drawPins, onError);
   }
   /**
    * скрывает букинг
    *
    */
   function hideBooking() {
-    deps.util.addClass(map, ClassName.MAP_FADED);
-    deps.util.addClass(filter, ClassName.FORM_DISABLED);
-    deps.util.addClass(form, ClassName.FORM_DISABLED);
-    deps.util.addDisabled(formItems);
-    deps.util.addDisabled(filterItems);
+    window.util.addClass(map, classNames.MAP_FADED);
+    window.util.addClass(filter, classNames.FORM_DISABLED);
+    window.util.addClass(form, classNames.FORM_DISABLED);
+    window.util.addDisabled(formItems);
+    window.util.addDisabled(filterItems);
   }
   /**
    * выводит сообщение об ошибке, если ошибка возникла
@@ -82,7 +76,7 @@
    *
    */
   function onError(errorMessage) {
-    error.querySelector(Selector.ERROR_MESSAGE).textContent = errorMessage;
+    error.querySelector(selectors.ERROR_MESSAGE).textContent = errorMessage;
     errorLocation.appendChild(error);
     /**
      * удаляет сообщение об ошибке
@@ -101,7 +95,7 @@
      */
     function onEnterPress(evt) {
       evt.preventDefault();
-      deps.util.isEnterEvent(evt, removeError);
+      window.util.isEnterEvent(evt, removeError);
     }
     /**
      * обработчик события Esc press
@@ -110,7 +104,7 @@
      */
     function onEscPress(evt) {
       evt.preventDefault();
-      deps.util.isEscEvent(evt, removeError);
+      window.util.isEscEvent(evt, removeError);
     }
     errorButton.addEventListener('click', removeError);
     document.addEventListener('keydown', onEnterPress);
@@ -173,7 +167,7 @@
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
 
-      address.value = deps.util.getCoordinates(mainPin, mainPin.offsetWidth / 2, mainPin.offsetHeight);
+      address.value = window.util.getCoordinates(mainPin, mainPin.offsetWidth / 2, mainPin.offsetHeight);
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -181,7 +175,7 @@
 
     evt.preventDefault();
 
-    if (map.classList.contains(ClassName.MAP_FADED)) {
+    if (map.classList.contains(classNames.MAP_FADED)) {
       activateBooking();
     }
 

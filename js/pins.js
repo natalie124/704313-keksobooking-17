@@ -2,14 +2,14 @@
 
 (function () {
 
-  var Selector = {
+  var selectors = {
     PINS: '.map__pins',
     PIN_TEMPLATE: '#pin',
     PIN: '.map__pin'
   };
 
-  var pins = document.querySelector(Selector.PINS);
-  var template = document.querySelector(Selector.PIN_TEMPLATE).content.querySelector(Selector.PIN);
+  var pins = document.querySelector(selectors.PINS);
+  var template = document.querySelector(selectors.PIN_TEMPLATE).content.querySelector(selectors.PIN);
   /**
    * получает разметку c данными объявления
    *
