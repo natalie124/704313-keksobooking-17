@@ -2,22 +2,47 @@
 
 (function () {
 
-  var deps = { // зависимости
-    util: window.util,
-    data: window.data,
-    pins: window.pins
+  var classNames = {
+    FORM_DISABLED: 'ad-form--disabled',
+    MAP_FADED: 'map--faded'
   };
 
-  var map = document.querySelector('.map'); // блок с картой объявлений
-  var mainPin = map.querySelector('.map__pin--main'); // блок с меткой
+  var selectors = {
+    MAIN: 'main',
 
-  var adForm = document.querySelector('.ad-form'); // блок с формой
-  var formElements = document.querySelectorAll('fieldset'); // блоки с элементами форм на странице
-  var address = adForm.querySelector('#address'); // поле с адресом метки
+    MAP: '.map',
+    MAIN_PIN: '.map__pin--main',
 
+    FORM: '.ad-form',
+    FORM_ITEM: 'fieldset',
+    ADDRESS: '#address',
 
-  var mapFilter = map.querySelector('.map__filters'); // блок с фильтром
-  var mapFilters = mapFilter.querySelectorAll('.map__filter'); // блоки с элементами фильтра
+    FILTER: '.map__filters',
+    FILTER_ITEM: '.map__filter',
+
+    ERROR_TEMPLATE: '#error',
+    ERROR: '.error',
+    ERROR_BUTTON: '.error__button',
+    ERROR_MESSAGE: '.error__message'
+  };
+
+  var PIN_Y_MIN = 130; // минимальная координата позиции метки по Y
+  var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
+
+  var map = document.querySelector(selectors.MAP); // блок с картой объявлений
+  var mainPin = map.querySelector(selectors.MAIN_PIN); // блок с меткой
+
+  var form = document.querySelector(selectors.FORM); // блок с формой
+  var formItems = document.querySelectorAll(selectors.FORM_ITEM); // блоки с элементами форм на странице
+  var address = form.querySelector(selectors.ADDRESS); // поле с адресом метки
+
+  var filter = map.querySelector(selectors.FILTER); // блок с фильтром
+  var filterItems = filter.querySelectorAll(selectors.FILTER_ITEM); // блоки с элементами фильтра
+
+  var errorLocation = document.querySelector(selectors.MAIN);
+  var errorTemplate = document.querySelector(selectors.ERROR_TEMPLATE).content.querySelector(selectors.ERROR);
+  var error = errorTemplate.cloneNode(true);
+  var errorButton = error.querySelector(selectors.ERROR_BUTTON);
 
   /**
    * активирует Букинг
@@ -25,14 +50,65 @@
    */
   function activateBooking() {
 
-    deps.util.removeClass(map, 'map--faded');
-    deps.util.removeClass(adForm, 'ad-form--disabled');
-    deps.util.removeClass(mapFilter, 'ad-form--disabled');
+    window.util.removeClass(map, classNames.MAP_FADED);
+    window.util.removeClass(form, classNames.FORM_DISABLED);
+    window.util.removeClass(filter, classNames.FORM_DISABLED);
 
-    deps.util.removeAttribute(mapFilters, 'disabled');
-    deps.util.removeAttribute(formElements, 'disabled');
+    window.util.removeDisabled(filterItems);
+    window.util.removeDisabled(formItems);
 
-    deps.pins.drawPins(deps.data.ads.length, deps.data.ads);
+    window.backend.load(window.pins.drawPins, onError);
+  }
+  /**
+   * скрывает букинг
+   *
+   */
+  function hideBooking() {
+    window.util.addClass(map, classNames.MAP_FADED);
+    window.util.addClass(filter, classNames.FORM_DISABLED);
+    window.util.addClass(form, classNames.FORM_DISABLED);
+    window.util.addDisabled(formItems);
+    window.util.addDisabled(filterItems);
+  }
+  /**
+   * выводит сообщение об ошибке, если ошибка возникла
+   * @param {string} errorMessage сообщение об ошибке
+   *
+   */
+  function onError(errorMessage) {
+    error.querySelector(selectors.ERROR_MESSAGE).textContent = errorMessage;
+    errorLocation.appendChild(error);
+    /**
+     * удаляет сообщение об ошибке
+     *
+     */
+    function removeError() {
+      error.remove();
+      hideBooking();
+      document.removeEventListener('keydown', onEscPress);
+      document.removeEventListener('keydown', onEnterPress);
+    }
+    /**
+     * обработчик события Enter press
+     * @param {object} evt объект события
+     *
+     */
+    function onEnterPress(evt) {
+      evt.preventDefault();
+      window.util.isEnterEvent(evt, removeError);
+    }
+    /**
+     * обработчик события Esc press
+     * @param {object} evt объект события
+     *
+     */
+    function onEscPress(evt) {
+      evt.preventDefault();
+      window.util.isEscEvent(evt, removeError);
+    }
+    errorButton.addEventListener('click', removeError);
+    document.addEventListener('keydown', onEnterPress);
+    document.addEventListener('keydown', onEscPress);
   }
   /**
    * обработчик события mousedown (для метки)
@@ -73,11 +149,11 @@
       if (mainPinLeft > map.offsetWidth - mainPin.offsetWidth) {
         mainPinLeft = map.offsetWidth - mainPin.offsetWidth;
       }
-      if (mainPin.offsetTop < deps.data.heightLimiters.min - mainPin.offsetHeight) {
-        mainPinTop = deps.data.heightLimiters.min - mainPin.offsetHeight;
+      if (mainPin.offsetTop < PIN_Y_MIN - mainPin.offsetHeight) {
+        mainPinTop = PIN_Y_MIN - mainPin.offsetHeight;
       }
-      if (mainPinTop > deps.data.heightLimiters.max - mainPin.offsetHeight) {
-        mainPinTop = deps.data.heightLimiters.max - mainPin.offsetHeight;
+      if (mainPinTop > PIN_Y_MAX - mainPin.offsetHeight) {
+        mainPinTop = PIN_Y_MAX - mainPin.offsetHeight;
       }
 
       mainPin.style.left = mainPinLeft + 'px';
@@ -91,7 +167,7 @@
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
 
-      address.value = deps.util.getCoordinates(mainPin, mainPin.offsetWidth / 2, mainPin.offsetHeight);
+      address.value = window.util.getCoordinates(mainPin, mainPin.offsetWidth / 2, mainPin.offsetHeight);
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -99,7 +175,7 @@
 
     evt.preventDefault();
 
-    if (map.classList.contains('map--faded')) {
+    if (map.classList.contains(classNames.MAP_FADED)) {
       activateBooking();
     }
 
@@ -107,12 +183,7 @@
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  // скрываем фильтр
-  deps.util.addClass(mapFilter, 'ad-form--disabled');
-  // добавляем атрибут disabled элементам формы
-  deps.util.addAttribute(formElements, 'disabled', 'disabled');
-  deps.util.addAttribute(mapFilters, 'disabled', 'disabled');
-  // добавляет событие перетаскивания метке
+  hideBooking();
   mainPin.addEventListener('mousedown', onMainPinMouseDown);
 
 })();

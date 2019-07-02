@@ -2,28 +2,50 @@
 
 (function () {
 
-  var deps = {
-    util: window.util,
-    data: window.data
+  var types = { // типы объявлений
+    palace: {
+      price: 10000
+    },
+    flat: {
+      price: 1000
+    },
+    house: {
+      price: 5000
+    },
+    bungalo: {
+      price: 0
+    }
   };
 
-  var adForm = document.querySelector('.ad-form'); // блок с формой
-  var address = adForm.querySelector('#address'); // поле с адресом метки
-  var houseType = adForm.querySelector('#type'); // поле тип жилья
-  var timein = adForm.querySelector('#timein'); // поле дата заезда
-  var timeout = adForm.querySelector('#timeout'); // поле дата выезда
+  var selectors = {
+    MAIN_PIN: '.map__pin--main',
 
-  var mainPin = document.querySelector('.map__pin--main'); // блок с меткой
+    FORM: '.ad-form',
+    ADDRESS: '#address',
+    TYPE: '#type',
+    TIMEIN: '#timein',
+    TIMEOUT: '#timeout',
+    MIN_PRICE: '#price'
+  };
+
+  var mainPin = document.querySelector(selectors.MAIN_PIN); // блок с меткой
+
+  var form = document.querySelector(selectors.FORM); // блок с формой
+  var address = form.querySelector(selectors.ADDRESS); // поле с адресом метки
+  var type = form.querySelector(selectors.TYPE); // поле тип жилья
+  var timein = form.querySelector(selectors.TIMEIN); // поле дата заезда
+  var timeout = form.querySelector(selectors.TIMEOUT); // поле дата выезда
+  var minPrice = form.querySelector(selectors.MIN_PRICE); // минимальная цена
+
   /**
    * обработчик события change (для поля type)
    *
    * @param {object} evt объект события
    */
   function onHouseTypeChange(evt) {
-    var housePrice = adForm.querySelector('#price');
 
-    housePrice.min = deps.data.housingTypes[evt.target.value].price;
-    housePrice.placeholder = deps.data.housingTypes[evt.target.value].price;
+    minPrice.min = types[evt.target.value].price;
+    minPrice.placeholder = types[evt.target.value].price;
   }
   /**
    * обработчик события change (для поля timein)
@@ -42,9 +64,9 @@
     timein.value = evt.target.value;
   }
 
-  address.value = deps.util.getCoordinates(mainPin, 0, 0);
+  address.value = window.util.getCoordinates(mainPin, 0, 0);
 
-  houseType.addEventListener('change', onHouseTypeChange);
+  type.addEventListener('change', onHouseTypeChange);
   // добавляем событие change для поля дата заезда
   timein.addEventListener('change', onTimeinChange);
   // добавляем событие change для поля дата выезда

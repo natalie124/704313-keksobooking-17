@@ -1,6 +1,15 @@
 'use strict';
 
 (function () {
+
+  var selectors = {
+    PINS: '.map__pins',
+    PIN_TEMPLATE: '#pin',
+    PIN: '.map__pin'
+  };
+
+  var pins = document.querySelector(selectors.PINS);
+  var template = document.querySelector(selectors.PIN_TEMPLATE).content.querySelector(selectors.PIN);
   /**
    * получает разметку c данными объявления
    *
@@ -9,8 +18,7 @@
    */
   function getPin(object) {
 
-    var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-    var element = pinTemplate.cloneNode(true);
+    var element = template.cloneNode(true);
 
     element.querySelector('img').src = object.author.avatar;
     element.querySelector('img').alt = object.offer.type;
@@ -24,17 +32,15 @@
     /**
      * рисует метки объявлений
      *
-     * @param {number} quantity количество объявлений
-     * @param {array} dataArr массив с данными объявлений
+     * @param {array} data массив с данными объявлений
      * @return {object} добавляем фрагмент с метками объявлений на страницу
      */
-    drawPins: function (quantity, dataArr) {
-      var pins = document.querySelector('.map__pins');
+    drawPins: function (data) {
       var fragment = document.createDocumentFragment();
 
-      for (var i = 0; i < quantity; i++) {
+      for (var i = 0; i < data.length; i++) {
 
-        fragment.appendChild(getPin(dataArr[i]));
+        fragment.appendChild(getPin(data[i]));
       }
 
       return pins.appendChild(fragment);
