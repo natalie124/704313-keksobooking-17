@@ -2,12 +2,12 @@
 
 (function () {
 
-  var classNames = {
+  var ClassName = {
     FORM_DISABLED: 'ad-form--disabled',
     MAP_FADED: 'map--faded'
   };
 
-  var selectors = {
+  var Selector = {
     MAIN: 'main',
 
     MAP: '.map',
@@ -29,20 +29,20 @@
   var PIN_Y_MIN = 130; // минимальная координата позиции метки по Y
   var PIN_Y_MAX = 630; // максимальная координата позиции метки по Y
 
-  var map = document.querySelector(selectors.MAP); // блок с картой объявлений
-  var mainPin = map.querySelector(selectors.MAIN_PIN); // блок с меткой
+  var map = document.querySelector(Selector.MAP); // блок с картой объявлений
+  var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
 
-  var form = document.querySelector(selectors.FORM); // блок с формой
-  var formItems = document.querySelectorAll(selectors.FORM_ITEM); // блоки с элементами форм на странице
-  var address = form.querySelector(selectors.ADDRESS); // поле с адресом метки
+  var form = document.querySelector(Selector.FORM); // блок с формой
+  var formItems = document.querySelectorAll(Selector.FORM_ITEM); // блоки с элементами форм на странице
+  var address = form.querySelector(Selector.ADDRESS); // поле с адресом метки
 
-  var filter = map.querySelector(selectors.FILTER); // блок с фильтром
-  var filterItems = filter.querySelectorAll(selectors.FILTER_ITEM); // блоки с элементами фильтра
+  var filter = map.querySelector(Selector.FILTER); // блок с фильтром
+  var filterItems = filter.querySelectorAll(Selector.FILTER_ITEM); // блоки с элементами фильтра
 
-  var errorLocation = document.querySelector(selectors.MAIN);
-  var errorTemplate = document.querySelector(selectors.ERROR_TEMPLATE).content.querySelector(selectors.ERROR);
+  var errorLocation = document.querySelector(Selector.MAIN);
+  var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR);
   var error = errorTemplate.cloneNode(true);
-  var errorButton = error.querySelector(selectors.ERROR_BUTTON);
+  var errorButton = error.querySelector(Selector.ERROR_BUTTON);
 
   /**
    * активирует Букинг
@@ -50,9 +50,9 @@
    */
   function activateBooking() {
 
-    window.util.removeClass(map, classNames.MAP_FADED);
-    window.util.removeClass(form, classNames.FORM_DISABLED);
-    window.util.removeClass(filter, classNames.FORM_DISABLED);
+    window.util.removeClass(map, ClassName.MAP_FADED);
+    window.util.removeClass(form, ClassName.FORM_DISABLED);
+    window.util.removeClass(filter, ClassName.FORM_DISABLED);
 
     window.util.removeDisabled(filterItems);
     window.util.removeDisabled(formItems);
@@ -64,9 +64,9 @@
    *
    */
   function hideBooking() {
-    window.util.addClass(map, classNames.MAP_FADED);
-    window.util.addClass(filter, classNames.FORM_DISABLED);
-    window.util.addClass(form, classNames.FORM_DISABLED);
+    window.util.addClass(map, ClassName.MAP_FADED);
+    window.util.addClass(filter, ClassName.FORM_DISABLED);
+    window.util.addClass(form, ClassName.FORM_DISABLED);
     window.util.addDisabled(formItems);
     window.util.addDisabled(filterItems);
   }
@@ -76,7 +76,7 @@
    *
    */
   function onError(errorMessage) {
-    error.querySelector(selectors.ERROR_MESSAGE).textContent = errorMessage;
+    error.querySelector(Selector.ERROR_MESSAGE).textContent = errorMessage;
     errorLocation.appendChild(error);
     /**
      * удаляет сообщение об ошибке
@@ -175,7 +175,7 @@
 
     evt.preventDefault();
 
-    if (map.classList.contains(classNames.MAP_FADED)) {
+    if (map.classList.contains(ClassName.MAP_FADED)) {
       activateBooking();
     }
 

@@ -2,7 +2,7 @@
 
 (function () {
 
-  var types = { // типы объявлений
+  var TYPES = { // типы объявлений
     palace: {
       price: 10000
     },
@@ -17,7 +17,7 @@
     }
   };
 
-  var selectors = {
+  var Selector = {
     MAIN_PIN: '.map__pin--main',
 
     FORM: '.ad-form',
@@ -28,14 +28,14 @@
     MIN_PRICE: '#price'
   };
 
-  var mainPin = document.querySelector(selectors.MAIN_PIN); // блок с меткой
+  var mainPin = document.querySelector(Selector.MAIN_PIN); // блок с меткой
 
-  var form = document.querySelector(selectors.FORM); // блок с формой
-  var address = form.querySelector(selectors.ADDRESS); // поле с адресом метки
-  var type = form.querySelector(selectors.TYPE); // поле тип жилья
-  var timein = form.querySelector(selectors.TIMEIN); // поле дата заезда
-  var timeout = form.querySelector(selectors.TIMEOUT); // поле дата выезда
-  var minPrice = form.querySelector(selectors.MIN_PRICE); // минимальная цена
+  var form = document.querySelector(Selector.FORM); // блок с формой
+  var address = form.querySelector(Selector.ADDRESS); // поле с адресом метки
+  var type = form.querySelector(Selector.TYPE); // поле тип жилья
+  var timein = form.querySelector(Selector.TIMEIN); // поле дата заезда
+  var timeout = form.querySelector(Selector.TIMEOUT); // поле дата выезда
+  var minPrice = form.querySelector(Selector.MIN_PRICE); // минимальная цена
 
   /**
    * обработчик события change (для поля type)
@@ -44,8 +44,8 @@
    */
   function onHouseTypeChange(evt) {
 
-    minPrice.min = types[evt.target.value].price;
-    minPrice.placeholder = types[evt.target.value].price;
+    minPrice.min = TYPES[evt.target.value].price;
+    minPrice.placeholder = TYPES[evt.target.value].price;
   }
   /**
    * обработчик события change (для поля timein)

@@ -2,7 +2,7 @@
 
 (function () {
 
-  var keyCode = {
+  var Code = {
     ENTER: 13,
     ESC: 27
   };
@@ -68,7 +68,7 @@
      * @param {function}  action действие, когда событие сработает
      */
     isEscEvent: function (evt, action) {
-      if (evt.keyCode === keyCode.ESC) {
+      if (evt.Code === Code.ESC) {
         action();
       }
     },
@@ -79,7 +79,7 @@
      * @param {function}  action действие, когда событие сработает
      */
     isEnterEvent: function (evt, action) {
-      if (evt.keyCode === keyCode.ENTER) {
+      if (evt.Code === Code.ENTER) {
         action();
       }
     }
