@@ -21,7 +21,7 @@
     ERROR_TEMPLATE: '#error',
     ERROR: '.error',
     ERROR_BUTTON: '.error__button',
-    ERROR_MESSAGE: '.error__message'
+    ERROR_MESSAGE: '.error__message',
   };
 
   var map = document.querySelector(Selector.MAP); // блок с картой объявлений
@@ -36,11 +36,13 @@
   var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR);
   var error = errorTemplate.cloneNode(true);
   var errorButton = error.querySelector(Selector.ERROR_BUTTON);
+
   /**
    * активирует Букинг
    *
    */
   function activateBooking() {
+
     window.util.removeClass(map, ClassName.MAP_FADED);
     window.util.removeClass(form, ClassName.FORM_DISABLED);
     window.util.removeClass(filter, ClassName.FORM_DISABLED);
@@ -48,7 +50,7 @@
     window.util.removeDisabled(filterItems);
     window.util.removeDisabled(formItems);
 
-    window.backend.load(window.pins.drawPins, onError);
+    window.backend.load(onLoad, onError);
   }
   /**
    * скрывает букинг
@@ -102,10 +104,21 @@
     document.addEventListener('keydown', onEscPress);
   }
 
+  function onLoad(data) {
+    window.pins.draw(data);
+    window.filter.type();
+    window.filter.price();
+    window.filter.rooms();
+    window.filter.guests();
+    window.filter.features();
+  }
+
   hideBooking();
+
 
   window.map = {
     activate: activateBooking
   };
+  filter.addEventListener('change', onLoad);
 
 })();

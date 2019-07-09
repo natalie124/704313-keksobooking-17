@@ -7,6 +7,10 @@
     ESC: 27
   };
 
+  var DEBOUNCE_INTERVAL = 500;
+
+  var lastTimeout = null;
+
   window.util = {
     /**
      * удаляет класс у элемента
@@ -82,6 +86,12 @@
       if (evt.Code === Code.ENTER) {
         action();
       }
+    },
+    debounce: function (cb) {
+      if (lastTimeout) {
+        clearTimeout(lastTimeout);
+      }
+      lastTimeout = setTimeout(cb, DEBOUNCE_INTERVAL);
     }
   };
 

@@ -4,15 +4,19 @@
 
   var TYPES = { // типы объявлений
     palace: {
+      name: 'Дворец',
       price: 10000
     },
     flat: {
+      name: 'Квартира',
       price: 1000
     },
     house: {
+      name: 'Дом',
       price: 5000
     },
     bungalo: {
+      name: 'Бунгало',
       price: 0
     }
   };
