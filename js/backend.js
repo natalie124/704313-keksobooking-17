@@ -9,7 +9,12 @@
   var TIMEOUT = 10000;
 
   var OK_STATUS = 200;
-
+  /**
+   * генерирует сообщение об ошибке
+   *
+   * @param {number} error - xhr.status ошибки
+   * @return {string} строка с сообщением об ошибке
+   */
   function getErrorMesage(error) {
     switch (error) {
       case 500:
@@ -26,7 +31,14 @@
         return 'Ошибка загрузки объявления';
     }
   }
-
+  /**
+   * создает запрос на сервер
+   *
+   * @param {string} method - GET или POST
+   * @param {function} onLoad - действие в случае успеха
+   * @param {number} onError - действие в случае ошибки
+   * @return {object} xhr объект запроса
+   */
   function createRequest(method, onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
@@ -54,7 +66,12 @@
   }
 
   window.backend = {
-
+    /**
+     * создает GET запрос на сервер
+     *
+     * @param {function} onLoad - действие в случае успеха
+     * @param {number} onError - действие в случае ошибки
+    */
     load: function (onLoad, onError) {
       var xhr = createRequest('GET', onLoad, onError);
       xhr.send();

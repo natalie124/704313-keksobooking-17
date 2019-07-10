@@ -2,10 +2,14 @@
 
 (function () {
 
-  var keyCode = {
+  var Code = {
     ENTER: 13,
     ESC: 27
   };
+
+  var DEBOUNCE_INTERVAL = 500;
+
+  var lastTimeout = null;
 
   window.util = {
     /**
@@ -68,7 +72,7 @@
      * @param {function}  action действие, когда событие сработает
      */
     isEscEvent: function (evt, action) {
-      if (evt.keyCode === keyCode.ESC) {
+      if (evt.Code === Code.ESC) {
         action();
       }
     },
@@ -79,9 +83,20 @@
      * @param {function}  action действие, когда событие сработает
      */
     isEnterEvent: function (evt, action) {
-      if (evt.keyCode === keyCode.ENTER) {
+      if (evt.Code === Code.ENTER) {
         action();
       }
+    },
+    /**
+     * возвращает обертку, которая откладывает вызов исходной функции на определенное время
+     *
+     * @param {function} cb функция обертка с исходной функцией
+     */
+    debounce: function (cb) {
+      if (lastTimeout) {
+        clearTimeout(lastTimeout);
+      }
+      lastTimeout = setTimeout(cb, DEBOUNCE_INTERVAL);
     }
   };
 
