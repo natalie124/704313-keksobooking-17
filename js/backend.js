@@ -6,8 +6,6 @@
     GET: 'https://js.dump.academy/keksobooking/data'
   };
 
-  window.ads = [];
-
   var TIMEOUT = 10000;
 
   var OK_STATUS = 200;
@@ -49,7 +47,6 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === OK_STATUS) {
         onLoad(xhr.response);
-        window.ads = xhr.response;
       } else {
         onError(getErrorMesage(xhr.status));
       }

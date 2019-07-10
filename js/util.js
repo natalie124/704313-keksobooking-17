@@ -87,6 +87,11 @@
         action();
       }
     },
+    /**
+     * возвращает обертку, которая откладывает вызов исходной функции на определенное время
+     *
+     * @param {function} cb функция обертка с исходной функцией
+     */
     debounce: function (cb) {
       if (lastTimeout) {
         clearTimeout(lastTimeout);

@@ -32,10 +32,10 @@
   var filter = map.querySelector(Selector.FILTER); // блок с фильтром
   var filterItems = filter.querySelectorAll(Selector.FILTER_ITEM); // блоки с элементами фильтра
 
-  var errorLocation = document.querySelector(Selector.MAIN);
-  var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR);
-  var error = errorTemplate.cloneNode(true);
-  var errorButton = error.querySelector(Selector.ERROR_BUTTON);
+  var errorLocation = document.querySelector(Selector.MAIN); // блок, в котором будет отображаться ошибка
+  var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR); // шаблон ошибки
+  var error = errorTemplate.cloneNode(true); // разметка ошибки
+  var errorButton = error.querySelector(Selector.ERROR_BUTTON); // кнопка 'закрыть ошибку'
 
   /**
    * активирует Букинг
@@ -99,26 +99,25 @@
       evt.preventDefault();
       window.util.isEscEvent(evt, removeError);
     }
+
     errorButton.addEventListener('click', removeError);
     document.addEventListener('keydown', onEnterPress);
     document.addEventListener('keydown', onEscPress);
   }
-
+  /**
+   * обработчик данных
+   * @param {array} data массив с данными
+   *
+   */
   function onLoad(data) {
     window.pins.draw(data);
-    window.filter.type();
-    window.filter.price();
-    window.filter.rooms();
-    window.filter.guests();
-    window.filter.features();
+    window.onFilter(data);
   }
 
   hideBooking();
 
-
   window.map = {
     activate: activateBooking
   };
-  filter.addEventListener('change', onLoad);
 
 })();

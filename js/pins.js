@@ -6,7 +6,7 @@
     PIN: '.map__pin',
     OFFER_PINS: '.map__pin:not(.map__pin--main)'
   };
-  var QUANTITY = 9; // количество волшебников для отрисовки
+  var QUANTITY = 5; // количество пинов для отрисовки
 
   var pins = document.querySelector(Selector.PINS);
   /**
