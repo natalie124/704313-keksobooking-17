@@ -4,16 +4,20 @@
 
   var TYPES = { // типы объявлений
     palace: {
-      price: 10000
+      price: 10000,
+      name: 'Дворец'
     },
     flat: {
-      price: 1000
+      price: 1000,
+      name: 'Квартира'
     },
     house: {
-      price: 5000
+      price: 5000,
+      name: 'Дом'
     },
     bungalo: {
-      price: 0
+      price: 0,
+      name: 'Бунгало'
     }
   };
 
@@ -71,5 +75,7 @@
   timein.addEventListener('change', onTimeinChange);
   // добавляем событие change для поля дата выезда
   timeout.addEventListener('change', onTimeoutChange);
+
+  window.types = TYPES;
 
 })();

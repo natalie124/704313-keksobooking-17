@@ -4,4 +4,152 @@
 
 (function () {
 
+  var Selector = {
+    MAP: '.map',
+    CARD_TEMPLATE: '#card',
+    CARD: '.map__card',
+    CARD_LOCATION: '.map__filters-container',
+
+    AVATAR: '.popup__avatar',
+    TITLE: '.popup__title',
+    ADDRESS: '.popup__text--address',
+    PRICE: '.popup__text--price',
+    TYPE: '.popup__type',
+    CAPACITY: '.popup__text--capacity',
+    TIME: '.popup__text--time',
+    FEATURES: '.popup__features',
+    DESCRIPTION: '.popup__description',
+    PHOTOS: '.popup__photos',
+    PHOTO: '.popup__photo'
+  };
+
+  var featuresToTitle = {
+    wifi: 'Wi-Fi',
+    dishwasher: 'Посудомоечная машина',
+    parking: 'Парковка',
+    washer: 'Cтиральная машина',
+    elevator: 'Лифт',
+    conditioner: 'Кондиционер'
+  };
+
+  var map = document.querySelector(Selector.MAP);
+
+  /**
+   * получает описание вместимости жилья
+   *
+   * @param {number} rooms количество комнат
+   * @param {number} guests количество гостей
+   * @return {string} информация о вместимости
+   */
+  function getCapacityDescription(rooms, guests) {
+    var desctiption = '';
+
+    if (rooms < 1) {
+      desctiption = 'Комнат нет';
+    } else if (rooms > 0 && guests < 1) {
+      desctiption = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' не для гостей.';
+    } else {
+      desctiption = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' для '
+      + guests + window.util.getNounPluralForm(guests, ' гостя.', ' гостей.', ' гостей.');
+    }
+
+    return desctiption;
+  }
+  /**
+   * получает разметку со списком удобств жилья и рисует ее в узел с картой
+   *
+   * @param {array} array список удобств
+   * @param {object} node узел для отрисовки
+   * @return {object} разметка
+   */
+  function getFeaturesList(array, node) {
+    var features = node.querySelector(Selector.FEATURES);
+    var fragment = document.createDocumentFragment();
+    features.innerHTML = '';
+
+    if (array.length === 0) {
+      features.remove();
+    }
+
+    array.forEach(function (it) {
+      var item = document.createElement('li');
+      item.className = 'popup__feature popup__feature--' + it;
+      item.title = featuresToTitle[it];
+
+      return fragment.appendChild(item);
+
+    });
+
+    return features.appendChild(fragment);
+  }
+  /**
+   * получает разметку со списком фотографий жилья и рисует ее в узел с картой
+   *
+   * @param {array} array список фотографий
+   * @param {object} node узел для отрисовки
+   * @return {object} разметка
+   */
+  function getPhotosList(array, node) {
+    var photos = node.querySelector(Selector.PHOTOS);
+    var photo = photos.querySelector(Selector.PHOTO);
+    var fragment = document.createDocumentFragment();
+
+    photos.innerHTML = '';
+
+    if (array.length === 0) {
+      photos.remove();
+    }
+
+    array.forEach(function (it) {
+      var item = photo.cloneNode(true);
+      item.src = it;
+
+      return fragment.appendChild(item);
+
+    });
+
+    return photos.appendChild(fragment);
+  }
+  /**
+   * получает разметку c данными карты и рисует ее в DOM
+   *
+   * @param {object} object объект с данными объявления
+   * @return {object} готовая разметка
+   */
+  function drawCard(object) {
+    var template = document.querySelector(Selector.CARD_TEMPLATE).content.querySelector(Selector.CARD);
+    var location = document.querySelector(Selector.CARD_LOCATION);
+    var element = template.cloneNode(true);
+    var fragment = document.createDocumentFragment();
+
+    element.querySelector(Selector.AVATAR).src = object.author.avatar;
+    element.querySelector(Selector.TITLE).textContent = object.offer.title;
+    element.querySelector(Selector.ADDRESS).textContent = object.offer.address;
+    element.querySelector(Selector.PRICE).textContent = object.offer.price + ' ₽/ночь';
+    element.querySelector(Selector.TYPE).textContent = window.types[object.offer.type].name;
+    element.querySelector(Selector.CAPACITY).textContent = getCapacityDescription(object.offer.rooms, object.offer.guests);
+    element.querySelector(Selector.TIME).textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout + '.';
+    getFeaturesList(object.offer.features, element);
+    element.querySelector(Selector.DESCRIPTION).textContent = object.offer.description;
+    getPhotosList(object.offer.photos, element);
+
+    fragment.appendChild(element);
+
+    return map.insertBefore(fragment, location);
+  }
+  /**
+   * удаляет разметку с картой из DOM
+   *
+   */
+  function removeCard() {
+    var card = map.querySelector(Selector.CARD);
+    if (card !== null) {
+      card.remove();
+    }
+  }
+  window.card = {
+    remove: removeCard,
+    draw: drawCard
+  };
+
 })();
