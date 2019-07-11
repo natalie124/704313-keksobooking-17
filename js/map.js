@@ -21,7 +21,7 @@
     ERROR_TEMPLATE: '#error',
     ERROR: '.error',
     ERROR_BUTTON: '.error__button',
-    ERROR_MESSAGE: '.error__message',
+    ERROR_MESSAGE: '.error__message'
   };
 
   var map = document.querySelector(Selector.MAP); // блок с картой объявлений

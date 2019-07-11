@@ -8,7 +8,7 @@
     PRICE: '#housing-price',
     ROOMS: '#housing-rooms',
     GUESTS: '#housing-guests',
-    ACTIVE_CHECKBOX: 'fieldset input[name="features"]:checked'
+    ACTIVE_CHECKBOX: 'input[name="features"]:checked',
   };
 
   var limitsToPrice = {

@@ -72,7 +72,7 @@
      * @param {function}  action действие, когда событие сработает
      */
     isEscEvent: function (evt, action) {
-      if (evt.Code === Code.ESC) {
+      if (evt.keyCode === Code.ESC) {
         action();
       }
     },
@@ -83,7 +83,7 @@
      * @param {function}  action действие, когда событие сработает
      */
     isEnterEvent: function (evt, action) {
-      if (evt.Code === Code.ENTER) {
+      if (evt.keyCode === Code.ENTER) {
         action();
       }
     },
@@ -97,6 +97,33 @@
         clearTimeout(lastTimeout);
       }
       lastTimeout = setTimeout(cb, DEBOUNCE_INTERVAL);
+    },
+    /**
+     * возвращает корректную форму множественного числа
+     * ограничения: только для целых чисел
+     *
+     * @param {number} number число, по которому вычисляем форму множественного числа
+     * @param {string} one форма единственного числа: яблоко, час, минута
+     * @param {string} two форма множественного числа для 2, 3, 4: яблока, часа, минуты
+     * @param {string} many форма множественного числа для остальных чисел
+     *
+     * @return {string} рассчитанная форма множественнго числа
+     */
+    getNounPluralForm: function (number, one, two, many) {
+      var mod10 = number % 10;
+      var mod100 = number % 100;
+      switch (true) {
+        case (mod100 >= 11 && mod100 <= 20):
+          return many;
+        case (mod10 > 5):
+          return many;
+        case (mod10 === 1):
+          return one;
+        case (mod10 >= 2 && mod10 <= 4):
+          return two;
+        default:
+          return many;
+      }
     }
   };
 

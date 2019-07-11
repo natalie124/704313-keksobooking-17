@@ -4,8 +4,10 @@
     PINS: '.map__pins',
     PIN_TEMPLATE: '#pin',
     PIN: '.map__pin',
-    OFFER_PINS: '.map__pin:not(.map__pin--main)'
+    OFFER_PINS: '.map__pin:not(.map__pin--main)',
+    CLOSE_CARD: '.popup__close'
   };
+
   var QUANTITY = 5; // количество пинов для отрисовки
 
   var pins = document.querySelector(Selector.PINS);
@@ -24,6 +26,28 @@
     element.style.left = object.location.x + 'px';
     element.style.top = object.location.y + 'px';
 
+
+    element.addEventListener('click', function () {
+      window.card.remove();
+      window.card.draw(object);
+
+      var closeButton = document.querySelector(Selector.CLOSE_CARD);
+
+      function onEscPress(evt) {
+        evt.preventDefault();
+        window.util.isEscEvent(evt, window.card.remove);
+        document.removeEventListener('keydown', onEscPress);
+      }
+
+      closeButton.addEventListener('click', function () {
+        window.card.remove();
+        document.removeEventListener('keydown', onEscPress);
+      });
+
+      document.addEventListener('keydown', onEscPress);
+
+    });
+
     return element;
   }
   /**
@@ -33,8 +57,10 @@
    * @return {object} добавляем фрагмент с метками объявлений на страницу
    */
   function drawPins(data) {
+
     var quantity = data.length >= QUANTITY ? QUANTITY : data.length;
     var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < quantity; i++) {
       fragment.appendChild(getPin(data[i]));
     }
