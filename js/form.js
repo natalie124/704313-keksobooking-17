@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+(function () {
 
   var TYPES = { // типы объявлений
     palace: {
@@ -48,20 +48,20 @@
   /**
    * проверяет вместимость жилья
    *
-   * @param {number} rooms количество комнат
-   * @param {number} capacity количество гостей
+   * @param {number} numberOfRooms количество комнат
+   * @param {number} numberOfGuests количество гостей
    * @return {string} сообщение о неверно выбранной вместимости
    */
-  function checkChosenCapacity(rooms, capacity) {
+  function checkChosenCapacity(numberOfRooms, numberOfGuests) {
     var message = '';
-    if (rooms === 100 && capacity !== 0) {
+    if (numberOfRooms === 100 && numberOfGuests !== 0) {
       message = '100 комнат — «не для гостей»';
-    } else if (rooms === 1 && capacity !== 1) {
+    } else if (numberOfRooms === 1 && numberOfGuests !== 1) {
       message = '1 комната — «для 1 гостя»';
-    } else if (rooms === 2 && (capacity > 2 || capacity === 0)) {
+    } else if (numberOfRooms === 2 && (numberOfGuests > 2 || numberOfGuests === 0)) {
       message = '2 комнаты — «для 2 гостей» или «для 1 гостя»';
-    } else if (rooms === 3 && (capacity > 3 || capacity === 0)) {
-      message ='3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»'
+    } else if (numberOfRooms === 3 && (numberOfGuests > 3 || numberOfGuests === 0)) {
+      message = '3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»';
     }
     return message;
   }

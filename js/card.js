@@ -60,7 +60,7 @@
    *
    * @param {array} array список удобств
    * @param {object} node узел для отрисовки
-   * @return {object} разметка
+   *
    */
   function getFeaturesList(array, node) {
     var features = node.querySelector(Selector.FEATURES);
@@ -87,7 +87,7 @@
    *
    * @param {array} array список фотографий
    * @param {object} node узел для отрисовки
-   * @return {object} разметка
+   *
    */
   function getPhotosList(array, node) {
     var photos = node.querySelector(Selector.PHOTOS);
@@ -114,7 +114,7 @@
    * получает разметку c данными карты и рисует ее в DOM
    *
    * @param {object} object объект с данными объявления
-   * @return {object} готовая разметка
+   *
    */
   function drawCard(object) {
     var template = document.querySelector(Selector.CARD_TEMPLATE).content.querySelector(Selector.CARD);
