@@ -3,7 +3,8 @@
 (function () {
 
   var Url = {
-    GET: 'https://js.dump.academy/keksobooking/data'
+    GET: 'https://js.dump.academy/keksobooking/data',
+    POST: 'https://js.dump.academy/keksobooking'
   };
 
   var TIMEOUT = 10000;
@@ -70,10 +71,21 @@
      * создает GET запрос на сервер
      *
      * @param {function} onLoad - действие в случае успеха
-     * @param {number} onError - действие в случае ошибки
+     * @param {function} onError - действие в случае ошибки
     */
     load: function (onLoad, onError) {
       var xhr = createRequest('GET', onLoad, onError);
+      xhr.send();
+    },
+    /**
+     * создает POST запрос на сервер
+     *
+     * @param {object} data - объект с данными для сервера
+     * @param {function} onLoad - действие в случае успеха
+     * @param {function} onError - действие в случае ошибки
+    */
+    save: function (data, onLoad, onError) {
+      var xhr = createRequest('POST', onLoad, onError);
       xhr.send();
     }
   };
