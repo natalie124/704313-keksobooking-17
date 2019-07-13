@@ -42,18 +42,18 @@
    * @return {string} информация о вместимости
    */
   function getCapacityDescription(rooms, guests) {
-    var desctiption = '';
+    var description = '';
 
     if (rooms < 1) {
-      desctiption = 'Комнат нет';
+      description = 'Комнат нет';
     } else if (rooms > 0 && guests < 1) {
-      desctiption = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' не для гостей.';
+      description = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' не для гостей.';
     } else {
-      desctiption = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' для '
+      description = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' для '
       + guests + window.util.getNounPluralForm(guests, ' гостя.', ' гостей.', ' гостей.');
     }
 
-    return desctiption;
+    return description;
   }
   /**
    * получает разметку со списком удобств жилья и рисует ее в узел с картой
@@ -76,11 +76,11 @@
       item.className = 'popup__feature popup__feature--' + it;
       item.title = featuresToTitle[it];
 
-      return fragment.appendChild(item);
+      fragment.appendChild(item);
 
     });
 
-    return features.appendChild(fragment);
+    features.appendChild(fragment);
   }
   /**
    * получает разметку со списком фотографий жилья и рисует ее в узел с картой
@@ -104,11 +104,11 @@
       var item = photo.cloneNode(true);
       item.src = it;
 
-      return fragment.appendChild(item);
+      fragment.appendChild(item);
 
     });
 
-    return photos.appendChild(fragment);
+    photos.appendChild(fragment);
   }
   /**
    * получает разметку c данными карты и рисует ее в DOM
@@ -135,7 +135,7 @@
 
     fragment.appendChild(element);
 
-    return map.insertBefore(fragment, location);
+    map.insertBefore(fragment, location);
   }
   /**
    * удаляет разметку с картой из DOM
