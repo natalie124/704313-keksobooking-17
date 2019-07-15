@@ -1,14 +1,11 @@
 'use strict';
 
 (function () {
-
   var Url = {
     GET: 'https://js.dump.academy/keksobooking/data',
     POST: 'https://js.dump.academy/keksobooking'
   };
-
   var TIMEOUT = 10000;
-
   var OK_STATUS = 200;
   /**
    * генерирует сообщение об ошибке
@@ -65,7 +62,6 @@
 
     return xhr;
   }
-
   window.backend = {
     /**
      * создает GET запрос на сервер
@@ -86,7 +82,7 @@
     */
     save: function (data, onLoad, onError) {
       var xhr = createRequest('POST', onLoad, onError);
-      xhr.send();
+      xhr.send(data);
     }
   };
 

@@ -1,16 +1,12 @@
 'use strict';
 
 (function () {
-
   var Code = {
     ENTER: 13,
     ESC: 27
   };
-
   var DEBOUNCE_INTERVAL = 500;
-
   var lastTimeout = null;
-
   window.util = {
     /**
      * удаляет класс у элемента

@@ -14,29 +14,25 @@
 
     FORM: '.ad-form',
     FORM_ITEM: 'fieldset',
+    RESET: '.ad-form__reset',
 
     FILTER: '.map__filters',
     FILTER_ITEM: '.map__filter',
 
     ERROR_TEMPLATE: '#error',
     ERROR: '.error',
-    ERROR_BUTTON: '.error__button',
-    ERROR_MESSAGE: '.error__message'
+    ERROR_MESSAGE: '.error__message',
+
+    SUCCESS_TEMPLATE: '#success',
+    SUCCESS: '.success'
   };
 
   var map = document.querySelector(Selector.MAP); // блок с картой объявлений
-
   var form = document.querySelector(Selector.FORM); // блок с формой
   var formItems = document.querySelectorAll(Selector.FORM_ITEM); // блоки с элементами форм на странице
-
+  var reset = form.querySelector(Selector.RESET);
   var filter = map.querySelector(Selector.FILTER); // блок с фильтром
   var filterItems = filter.querySelectorAll(Selector.FILTER_ITEM); // блоки с элементами фильтра
-
-  var errorLocation = document.querySelector(Selector.MAIN); // блок, в котором будет отображаться ошибка
-  var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR); // шаблон ошибки
-  var error = errorTemplate.cloneNode(true); // разметка ошибки
-  var errorButton = error.querySelector(Selector.ERROR_BUTTON); // кнопка 'закрыть ошибку'
-
   /**
    * активирует Букинг
    *
@@ -62,6 +58,9 @@
     window.util.addClass(form, ClassName.FORM_DISABLED);
     window.util.addDisabled(formItems);
     window.util.addDisabled(filterItems);
+    window.pins.remove();
+    window.card.remove();
+    window.cleanForm();
   }
   /**
    * выводит сообщение об ошибке, если ошибка возникла
@@ -69,15 +68,20 @@
    *
    */
   function onError(errorMessage) {
+    var errorLocation = document.querySelector(Selector.MAIN);
+    var errorTemplate = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR);
+    var error = errorTemplate.cloneNode(true);
+
     error.querySelector(Selector.ERROR_MESSAGE).textContent = errorMessage;
     errorLocation.appendChild(error);
+    hideBooking();
     /**
      * удаляет сообщение об ошибке
      *
      */
     function removeError() {
       error.remove();
-      hideBooking();
+      document.removeEventListener('click', removeError);
       document.removeEventListener('keydown', onEscPress);
       document.removeEventListener('keydown', onEnterPress);
     }
@@ -100,7 +104,50 @@
       window.util.isEscEvent(evt, removeError);
     }
 
-    errorButton.addEventListener('click', removeError);
+    document.addEventListener('click', removeError);
+    document.addEventListener('keydown', onEnterPress);
+    document.addEventListener('keydown', onEscPress);
+  }
+  /**
+   * выводит сообщение об успешной отправке формы
+   *
+   */
+  function onSuccess() {
+    var successLocation = document.querySelector(Selector.MAIN);
+    var successTemplate = document.querySelector(Selector.SUCCESS_TEMPLATE).content.querySelector(Selector.SUCCESS);
+    var success = successTemplate.cloneNode(true);
+    hideBooking();
+    successLocation.appendChild(success);
+    /**
+     * удаляет сообщение об успешной отправке формы
+     *
+     */
+    function removeSuccess() {
+      success.remove();
+
+      document.removeEventListener('click', removeSuccess);
+      document.removeEventListener('keydown', onEscPress);
+      document.removeEventListener('keydown', onEnterPress);
+    }
+    /**
+     * обработчик события Enter press
+     * @param {object} evt объект события
+     *
+     */
+    function onEnterPress(evt) {
+      evt.preventDefault();
+      window.util.isEnterEvent(evt, removeSuccess);
+    }
+    /**
+     * обработчик события Esc press
+     * @param {object} evt объект события
+     *
+     */
+    function onEscPress(evt) {
+      evt.preventDefault();
+      window.util.isEscEvent(evt, removeSuccess);
+    }
+    document.addEventListener('click', removeSuccess);
     document.addEventListener('keydown', onEnterPress);
     document.addEventListener('keydown', onEscPress);
   }
@@ -113,11 +160,33 @@
     window.pins.draw(data);
     window.onFilter(data);
   }
+  /**
+   * обработчик события keydown (для кнопки очистить)
+   *
+   * @param {object} evt объект события
+   */
+  function onResetEnterPress(evt) {
+    if (reset === document.activeElement) {
+      evt.preventDefault();
+      window.util.isEnterEvent(evt, hideBooking);
+    }
+  }
 
   hideBooking();
 
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), onSuccess, onError);
+    evt.preventDefault();
+  });
+  // добавляем событие очистки формы клику на кнопке 'очистить'
+  reset.addEventListener('click', hideBooking);
+  // добавляем событие очистки формы нажатию Enter на кнопке 'очистить'
+  reset.addEventListener('keydown', onResetEnterPress);
+
   window.map = {
-    activate: activateBooking
+    activate: activateBooking,
+    hide: hideBooking,
+    onError: onError
   };
 
 })();

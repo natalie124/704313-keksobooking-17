@@ -22,7 +22,24 @@
     PHOTOS: '.popup__photos',
     PHOTO: '.popup__photo'
   };
-
+  var optionsToHousingTypes = { // типы объявлений
+    palace: {
+      price: 10000,
+      name: 'Дворец'
+    },
+    flat: {
+      price: 1000,
+      name: 'Квартира'
+    },
+    house: {
+      price: 5000,
+      name: 'Дом'
+    },
+    bungalo: {
+      price: 0,
+      name: 'Бунгало'
+    }
+  };
   var featuresToTitle = {
     wifi: 'Wi-Fi',
     dishwasher: 'Посудомоечная машина',
@@ -31,9 +48,7 @@
     elevator: 'Лифт',
     conditioner: 'Кондиционер'
   };
-
   var map = document.querySelector(Selector.MAP);
-
   /**
    * получает описание вместимости жилья
    *
@@ -66,20 +81,16 @@
     var features = node.querySelector(Selector.FEATURES);
     var fragment = document.createDocumentFragment();
     features.innerHTML = '';
-
     if (array.length === 0) {
       features.remove();
     }
-
     array.forEach(function (it) {
       var item = document.createElement('li');
       item.className = 'popup__feature popup__feature--' + it;
       item.title = featuresToTitle[it];
 
       fragment.appendChild(item);
-
     });
-
     features.appendChild(fragment);
   }
   /**
@@ -95,19 +106,15 @@
     var fragment = document.createDocumentFragment();
 
     photos.innerHTML = '';
-
     if (array.length === 0) {
       photos.remove();
     }
-
     array.forEach(function (it) {
       var item = photo.cloneNode(true);
       item.src = it;
 
       fragment.appendChild(item);
-
     });
-
     photos.appendChild(fragment);
   }
   /**
@@ -126,7 +133,7 @@
     element.querySelector(Selector.TITLE).textContent = object.offer.title;
     element.querySelector(Selector.ADDRESS).textContent = object.offer.address;
     element.querySelector(Selector.PRICE).textContent = object.offer.price + ' ₽/ночь';
-    element.querySelector(Selector.TYPE).textContent = window.types[object.offer.type].name;
+    element.querySelector(Selector.TYPE).textContent = optionsToHousingTypes[object.offer.type].name;
     element.querySelector(Selector.CAPACITY).textContent = getCapacityDescription(object.offer.rooms, object.offer.guests);
     element.querySelector(Selector.TIME).textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout + '.';
     getFeaturesList(object.offer.features, element);
@@ -149,7 +156,8 @@
   }
   window.card = {
     remove: removeCard,
-    draw: drawCard
+    draw: drawCard,
+    types: optionsToHousingTypes
   };
 
 })();

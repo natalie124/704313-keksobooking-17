@@ -2,40 +2,20 @@
 
 (function () {
 
-  var TYPES = { // типы объявлений
-    palace: {
-      price: 10000,
-      name: 'Дворец'
-    },
-    flat: {
-      price: 1000,
-      name: 'Квартира'
-    },
-    house: {
-      price: 5000,
-      name: 'Дом'
-    },
-    bungalo: {
-      price: 0,
-      name: 'Бунгало'
-    }
-  };
-
   var Selector = {
     MAIN_PIN: '.map__pin--main',
 
     FORM: '.ad-form',
+    PRICE: '#price',
     ADDRESS: '#address',
     TYPE: '#type',
     TIMEIN: '#timein',
     TIMEOUT: '#timeout',
     MIN_PRICE: '#price',
     ROOMS: '#room_number',
-    CAPACITY: '#capacity'
+    CAPACITY: '#capacity',
   };
-
   var mainPin = document.querySelector(Selector.MAIN_PIN); // блок с меткой
-
   var form = document.querySelector(Selector.FORM); // блок с формой
   var address = form.querySelector(Selector.ADDRESS); // поле с адресом метки
   var type = form.querySelector(Selector.TYPE); // поле тип жилья
@@ -45,6 +25,38 @@
   var rooms = form.querySelector(Selector.ROOMS); // количество комнат
   var capacity = form.querySelector(Selector.CAPACITY); // количество гостей
 
+  var fieldsValuesById = getFieldsValuesById(); // объект, содержащий id полей формы как ключи и value как значения
+  /**
+   * получает объект, содержащий id полей формы как ключи и value как значения
+   *
+   * @return {object} объект с данными полей формы
+   */
+  function getFieldsValuesById() {
+    var valuesById = {};
+    var fields = form.querySelectorAll('[id]');
+    fields.forEach(function (field) {
+      valuesById[field.id] = field.value;
+    });
+    return valuesById;
+  }
+  /**
+   * возвращает поля формы в изначальное состояние
+   *
+   */
+  function cleanForm() {
+    var fields = form.querySelectorAll('[id]');
+    var cleanFields = Array.from(fields).filter(function (field) {
+      return fieldsValuesById.hasOwnProperty(field.id);
+    });
+    cleanFields.forEach(function (cleanField) {
+      cleanField.value = fieldsValuesById[cleanField.id];
+      if (cleanField.type === 'checkbox') {
+        cleanField.checked = false;
+      }
+    });
+    minPrice.placeholder = window.card.types[type.value].price;
+    address.value = window.util.getCoordinates(mainPin, 0, 0);
+  }
   /**
    * проверяет вместимость жилья
    *
@@ -52,7 +64,7 @@
    * @param {number} numberOfGuests количество гостей
    * @return {string} сообщение о неверно выбранной вместимости
    */
-  function checkChosenCapacity(numberOfRooms, numberOfGuests) {
+  function checkCapacity(numberOfRooms, numberOfGuests) {
     var message = '';
     if (numberOfRooms === 100 && numberOfGuests !== 0) {
       message = '100 комнат — «не для гостей»';
@@ -71,9 +83,8 @@
    * @param {object} evt объект события
    */
   function onHouseTypeChange(evt) {
-
-    minPrice.min = TYPES[evt.target.value].price;
-    minPrice.placeholder = TYPES[evt.target.value].price;
+    minPrice.min = window.card.types[evt.target.value].price;
+    minPrice.placeholder = window.card.types[evt.target.value].price;
   }
   /**
    * обработчик события change (для поля timein)
@@ -99,7 +110,7 @@
   function onCapacityChange(evt) {
     var roomsValue = parseInt(rooms.value, 10);
     var capacityValue = parseInt(evt.target.value, 10);
-    var message = checkChosenCapacity(roomsValue, capacityValue);
+    var message = checkCapacity(roomsValue, capacityValue);
 
     capacity.setCustomValidity(message);
   }
@@ -111,13 +122,11 @@
   function onRoomsChange(evt) {
     var roomsValue = parseInt(evt.target.value, 10);
     var capacityValue = parseInt(capacity.value, 10);
-    var message = checkChosenCapacity(roomsValue, capacityValue);
+    var message = checkCapacity(roomsValue, capacityValue);
 
     capacity.setCustomValidity(message);
   }
-
-  address.value = window.util.getCoordinates(mainPin, 0, 0);
-
+  // добавляем событие change для поля выбора типа жилья
   type.addEventListener('change', onHouseTypeChange);
   // добавляем событие change для поля дата заезда
   timein.addEventListener('change', onTimeinChange);
@@ -128,6 +137,6 @@
   // добавляем событие change для поля выбора количества комнат
   rooms.addEventListener('change', onRoomsChange);
 
-  window.types = TYPES;
+  window.cleanForm = cleanForm;
 
 })();
