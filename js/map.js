@@ -1,12 +1,10 @@
 'use strict';
 
 (function () {
-
   var ClassName = {
     FORM_DISABLED: 'ad-form--disabled',
     MAP_FADED: 'map--faded'
   };
-
   var Selector = {
     MAIN: 'main',
 
@@ -29,7 +27,6 @@
     SUCCESS_TEMPLATE: '#success',
     SUCCESS: '.success'
   };
-
   var map = document.querySelector(Selector.MAP); // блок с картой объявлений
   var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
   var form = document.querySelector(Selector.FORM); // блок с формой
@@ -189,5 +186,4 @@
     hide: hideBooking,
     onError: onError
   };
-
 })();

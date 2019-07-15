@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var Selector = {
     FORM: '.ad-form',
     PRICE: '#price',
@@ -12,7 +11,6 @@
     ROOMS: '#room_number',
     CAPACITY: '#capacity',
   };
-
   var form = document.querySelector(Selector.FORM); // блок с формой
   var type = form.querySelector(Selector.TYPE); // поле тип жилья
   var timein = form.querySelector(Selector.TIMEIN); // поле дата заезда
@@ -20,7 +18,13 @@
   var minPrice = form.querySelector(Selector.MIN_PRICE); // минимальная цена
   var rooms = form.querySelector(Selector.ROOMS); // количество комнат
   var capacity = form.querySelector(Selector.CAPACITY); // количество гостей
-
+  /**
+   * проверяет вместимость жилья
+   *
+   * @param {number} numberOfRooms количество комнат
+   * @param {number} numberOfGuests количество гостей
+   * @return {string} сообщение о неверно выбранной вместимости
+   */
   function checkCapacity(numberOfRooms, numberOfGuests) {
     var message = '';
     if (numberOfRooms === 100 && numberOfGuests !== 0) {
@@ -63,5 +67,4 @@
 
     capacity.setCustomValidity(message);
   });
-
 })();
