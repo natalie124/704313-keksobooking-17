@@ -58,7 +58,6 @@
    */
   function getCapacityDescription(rooms, guests) {
     var description = '';
-
     if (rooms < 1) {
       description = 'Комнат нет';
     } else if (rooms > 0 && guests < 1) {
@@ -67,7 +66,6 @@
       description = rooms + window.util.getNounPluralForm(rooms, ' комната', ' комнаты', ' комнат') + ' для '
       + guests + window.util.getNounPluralForm(guests, ' гостя.', ' гостей.', ' гостей.');
     }
-
     return description;
   }
   /**

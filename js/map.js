@@ -1,20 +1,21 @@
 'use strict';
 
 (function () {
-
   var ClassName = {
     FORM_DISABLED: 'ad-form--disabled',
     MAP_FADED: 'map--faded'
   };
-
   var Selector = {
     MAIN: 'main',
 
     MAP: '.map',
 
+    MAIN_PIN: '.map__pin--main',
+
     FORM: '.ad-form',
     FORM_ITEM: 'fieldset',
     RESET: '.ad-form__reset',
+    ADDRESS: '#address',
 
     FILTER: '.map__filters',
     FILTER_ITEM: '.map__filter',
@@ -26,10 +27,11 @@
     SUCCESS_TEMPLATE: '#success',
     SUCCESS: '.success'
   };
-
   var map = document.querySelector(Selector.MAP); // блок с картой объявлений
+  var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
   var form = document.querySelector(Selector.FORM); // блок с формой
   var formItems = document.querySelectorAll(Selector.FORM_ITEM); // блоки с элементами форм на странице
+  var address = document.querySelector(Selector.ADDRESS);
   var reset = form.querySelector(Selector.RESET);
   var filter = map.querySelector(Selector.FILTER); // блок с фильтром
   var filterItems = filter.querySelectorAll(Selector.FILTER_ITEM); // блоки с элементами фильтра
@@ -38,14 +40,11 @@
    *
    */
   function activateBooking() {
-
     window.util.removeClass(map, ClassName.MAP_FADED);
     window.util.removeClass(form, ClassName.FORM_DISABLED);
     window.util.removeClass(filter, ClassName.FORM_DISABLED);
-
     window.util.removeDisabled(filterItems);
     window.util.removeDisabled(formItems);
-
     window.backend.load(onLoad, onError);
   }
   /**
@@ -60,7 +59,8 @@
     window.util.addDisabled(filterItems);
     window.pins.remove();
     window.card.remove();
-    window.cleanForm();
+    form.reset();
+    address.value = window.util.getCoordinates(mainPin, 0, 0);
   }
   /**
    * выводит сообщение об ошибке, если ошибка возникла
@@ -166,10 +166,8 @@
    * @param {object} evt объект события
    */
   function onResetEnterPress(evt) {
-    if (reset === document.activeElement) {
-      evt.preventDefault();
-      window.util.isEnterEvent(evt, hideBooking);
-    }
+    evt.preventDefault();
+    window.util.isEnterEvent(evt, hideBooking);
   }
 
   hideBooking();
@@ -188,5 +186,4 @@
     hide: hideBooking,
     onError: onError
   };
-
 })();
