@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   var ALL_VALUE = 'any'; // значени фильтра "выбрать все"
-
   var Selector = {
     FILTER: '.map__filters',
     TYPE: '#housing-type',
@@ -10,18 +9,15 @@
     GUESTS: '#housing-guests',
     ACTIVE_CHECKBOX: 'input[name="features"]:checked',
   };
-
   var limitsToPrice = {
     low: 10000,
     high: 50000
   };
-
   var filter = document.querySelector(Selector.FILTER); // блок с фильтром
   var filterByType = filter.querySelector(Selector.TYPE); // блок с фильтром по типу жилья
   var filterByPrice = filter.querySelector(Selector.PRICE); // блок с фильтром по цене
   var filterByRooms = filter.querySelector(Selector.ROOMS); // блок с фильтром по количеству комнат
   var filterByGuests = filter.querySelector(Selector.GUESTS); // блок с фильтром по количеству гостей
-
   /**
    * проверяет тип жилья
    * @param {string} type название типа
