@@ -1,9 +1,5 @@
 'use strict';
-
-// карточка объявления
-
 (function () {
-
   var Selector = {
     MAP: '.map',
     CARD_TEMPLATE: '#card',
@@ -139,7 +135,6 @@
     getPhotosList(object.offer.photos, element);
 
     fragment.appendChild(element);
-
     map.insertBefore(fragment, location);
   }
   /**
@@ -157,5 +152,4 @@
     draw: drawCard,
     types: optionsToHousingTypes
   };
-
 })();

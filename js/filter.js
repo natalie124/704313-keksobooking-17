@@ -82,11 +82,11 @@
       });
       window.util.debounce(function () {
         window.pins.remove();
+        window.card.remove();
         window.pins.draw(updateAds);
       });
     });
   }
 
   window.onFilter = onFilter;
-
 })();

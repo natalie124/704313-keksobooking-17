@@ -1,5 +1,4 @@
 'use strict';
-
 (function () {
   var Url = {
     GET: 'https://js.dump.academy/keksobooking/data',
@@ -39,9 +38,7 @@
    */
   function createRequest(method, onLoad, onError) {
     var xhr = new XMLHttpRequest();
-
     xhr.responseType = 'json';
-
     xhr.addEventListener('load', function () {
       if (xhr.status === OK_STATUS) {
         onLoad(xhr.response);
@@ -56,7 +53,6 @@
     xhr.addEventListener('timeout', function () {
       onError(getErrorMesage(xhr.status));
     });
-
     xhr.timeout = TIMEOUT;
     xhr.open(method, Url[method]);
 
@@ -85,5 +81,4 @@
       xhr.send(data);
     }
   };
-
 })();
