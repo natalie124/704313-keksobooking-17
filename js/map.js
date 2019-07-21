@@ -8,6 +8,7 @@
     MAIN: 'main',
 
     MAP: '.map',
+    MAIN_PIN: '.map__pin--main',
 
     FORM: '.ad-form',
     FORM_ITEM: 'fieldset',
@@ -24,6 +25,7 @@
     SUCCESS: '.success'
   };
   var map = document.querySelector(Selector.MAP); // блок с картой объявлений
+  var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
   var form = document.querySelector(Selector.FORM); // блок с формой
   var formItems = document.querySelectorAll(Selector.FORM_ITEM); // блоки с элементами форм на странице
   var reset = form.querySelector(Selector.RESET);
@@ -40,6 +42,7 @@
     window.util.removeDisabled(filterItems);
     window.util.removeDisabled(formItems);
     window.backend.load(onLoad, onError);
+    // mainPin.removeAttribute('tabindex');
   }
   /**
    * скрывает букинг
@@ -55,7 +58,7 @@
     window.card.remove();
     filter.reset();
     window.form.clean();
-
+    mainPin.setAttribute('tabindex', '0');
   }
   /**
    * выводит сообщение об ошибке, если ошибка возникла

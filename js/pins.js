@@ -25,6 +25,7 @@
     element.querySelector('img').alt = object.offer.type;
     element.style.left = object.location.x + 'px';
     element.style.top = object.location.y + 'px';
+    element.setAttribute('tabindex', '1');
 
 
     element.addEventListener('click', function () {

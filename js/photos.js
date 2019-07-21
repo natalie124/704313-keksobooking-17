@@ -3,26 +3,20 @@
   var ClassName = {
     FORM_DISABLED: 'ad-form--disabled'
   };
-
   var Selector = {
     FORM: '.ad-form',
-
     PHOTOS: '#images',
     PHOTOS_DROP_ZONE: '.ad-form__drop-zone',
     PHOTO_PREVIEW: '.ad-form__photo',
     PHOTOS_CONTAINER: '.ad-form__photo-container'
   };
-
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
   var dataOnPhotos = {
     width: '70',
     height: '70',
     alt: 'Фотография жилья'
   };
-
   var form = document.querySelector(Selector.FORM);
-
   var photosChooser = form.querySelector(Selector.PHOTOS);
   var photosDropZone = form.querySelector(Selector.PHOTOS_DROP_ZONE);
   var photoContainer = form.querySelector(Selector.PHOTOS_CONTAINER);
@@ -36,17 +30,14 @@
     photo.alt = dataOnPhotos.alt;
     photo.src = dataUrl;
     preview.appendChild(photo);
-
+    preview.draggable = true;
     return preview;
   }
 
   function addPhotos(files) {
-
     Array.from(files).forEach(function (file) {
-
       var fileName = file.name.toLowerCase();
       var matches = FILE_TYPES.some(function (it) {
-
         return fileName.endsWith(it);
       });
       if (matches && !form.classList.contains(ClassName.FORM_DISABLED)) {
@@ -55,7 +46,6 @@
         reader.addEventListener('load', function () {
           photoContainer.insertBefore(createPhoto(reader.result), photoPreview);
         });
-
         reader.readAsDataURL(file);
       }
     });
@@ -66,6 +56,43 @@
     for (var i = 0; i < photosList.length - 1 && photosList.length > 1; i++) {
       photosList[i].remove();
     }
+  }
+
+  function onPhotoDragAndDrop(evt) {
+    var draggedItem = evt.target.parentNode;
+    var firstItem = photoContainer.firstElementChild;
+    var lastItem = photoContainer.lastElementChild;
+    function onPhotoDragover(dragoverEvt) {
+      dragoverEvt.preventDefault();
+      if (dragoverEvt.target !== firstItem && dragoverEvt.target !== lastItem && dragoverEvt.target !== photoContainer) {
+        dragoverEvt.target.style.opacity = '0.5';
+        dragoverEvt.target.style.transitionDuration = '0.3' + 's';
+      }
+      return false;
+    }
+    function onPhotoDrop(dropEvt) {
+      var target = dropEvt.target.parentNode;
+      var dropTarget = target;
+
+      dropEvt.target.style.opacity = '';
+
+      if (target.parentNode === photoContainer) {
+        if (target === lastItem.previousSibling) {
+          dropTarget = lastItem;
+        } else if (target === firstItem.nextSibling) {
+          dropTarget = firstItem.previousSibling;
+        }
+        photoContainer.insertBefore(draggedItem, dropTarget);
+        dropEvt.preventDefault();
+      }
+    }
+    function onPhotoDragleave(dragleaveEvt) {
+      dragleaveEvt.target.style.opacity = '';
+      dragleaveEvt.preventDefault();
+    }
+    photoContainer.addEventListener('dragover', onPhotoDragover);
+    photoContainer.addEventListener('drop', onPhotoDrop);
+    photoContainer.addEventListener('dragleave', onPhotoDragleave);
   }
 
   photosChooser.addEventListener('change', function () {
@@ -94,6 +121,8 @@
     evt.preventDefault();
     addPhotos(files);
   }, false);
+
+  photoContainer.addEventListener('dragstart', onPhotoDragAndDrop, false);
 
   window.photos = {
     remove: removePhotos
