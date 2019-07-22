@@ -10,30 +10,47 @@
     PHOTO_PREVIEW: '.ad-form__photo',
     PHOTOS_CONTAINER: '.ad-form__photo-container'
   };
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var dataOnPhotos = {
-    width: '70',
-    height: '70',
-    alt: 'Фотография жилья'
+  var PhotoData = {
+    WIDTH: '70',
+    HEIGHT: '70',
+    ALT: 'Фотография жилья'
   };
-  var form = document.querySelector(Selector.FORM);
-  var photosChooser = form.querySelector(Selector.PHOTOS);
-  var photosDropZone = form.querySelector(Selector.PHOTOS_DROP_ZONE);
-  var photoContainer = form.querySelector(Selector.PHOTOS_CONTAINER);
-  var photoPreview = photoContainer.querySelector(Selector.PHOTO_PREVIEW);
+  var DragAndDropStyle = {
+    PHOTOS_DRAGOVER_BACKGROUND: '#dadada',
+    PHOTO_DRAGOVER_OPACITY: '0.5',
+    PHOTO_DRAGOVER_TRANSITION: '0.3s'
+  };
 
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
+  var form = document.querySelector(Selector.FORM); // форма подачи объявления
+  var photosChooser = form.querySelector(Selector.PHOTOS); // поле для загрузки фотографий
+  var photosDropZone = form.querySelector(Selector.PHOTOS_DROP_ZONE); // дропзона для загрузки фотографий
+  var photoContainer = form.querySelector(Selector.PHOTOS_CONTAINER); // блок с фотографиями
+  var photoPreview = photoContainer.querySelector(Selector.PHOTO_PREVIEW); // контейнер для одной фотографии
+  /**
+   * создает разметку фотографии
+   *
+   * @param {string} dataUrl строка с адресом фотографии
+   * @return {object} разметка
+   */
   function createPhoto(dataUrl) {
     var preview = photoPreview.cloneNode();
     var photo = document.createElement('img');
-    photo.width = dataOnPhotos.width;
-    photo.height = dataOnPhotos.height;
-    photo.alt = dataOnPhotos.alt;
+    photo.width = PhotoData.WIDTH;
+    photo.height = PhotoData.HEIGHT;
+    photo.alt = PhotoData.ALT;
     photo.src = dataUrl;
     preview.appendChild(photo);
     preview.draggable = true;
     return preview;
   }
-
+  /**
+   * добавляет загруженные в форму фотографии на страницу
+   *
+   * @param {object} files объект с фотографиями
+   *
+   */
   function addPhotos(files) {
     Array.from(files).forEach(function (file) {
       var fileName = file.name.toLowerCase();
@@ -50,26 +67,46 @@
       }
     });
   }
-
+  /**
+   * удаляет загруженные в форму фотографии со страницы
+   *
+   */
   function removePhotos() {
     var photosList = photoContainer.querySelectorAll(Selector.PHOTO_PREVIEW);
     for (var i = 0; i < photosList.length - 1 && photosList.length > 1; i++) {
       photosList[i].remove();
     }
   }
-
+  /**
+   * добавляет событие перетаскивания для фотографии
+   *
+   * @param {object} evt объект события
+   *
+   */
   function onPhotoDragAndDrop(evt) {
     var draggedItem = evt.target.parentNode;
     var firstItem = photoContainer.firstElementChild;
     var lastItem = photoContainer.lastElementChild;
+    /**
+     * добавляет события dragover
+     *
+     * @param {object} dragoverEvt объект события
+     * @return {boolean} false
+     */
     function onPhotoDragover(dragoverEvt) {
       dragoverEvt.preventDefault();
       if (dragoverEvt.target !== firstItem && dragoverEvt.target !== lastItem && dragoverEvt.target !== photoContainer) {
-        dragoverEvt.target.style.opacity = '0.5';
-        dragoverEvt.target.style.transitionDuration = '0.3' + 's';
+        dragoverEvt.target.style.opacity = DragAndDropStyle.PHOTO_DRAGOVER_OPACITY;
+        dragoverEvt.target.style.transitionDuration = DragAndDropStyle.PHOTO_DRAGOVER_TRANSITION;
       }
       return false;
     }
+    /**
+     * добавляет событие drop для фотографии
+     *
+     * @param {object} dropEvt объект события
+     *
+     */
     function onPhotoDrop(dropEvt) {
       var target = dropEvt.target.parentNode;
       var dropTarget = target;
@@ -86,42 +123,49 @@
         dropEvt.preventDefault();
       }
     }
+    /**
+     * добавляет событие dragleave для фотографии
+     *
+     * @param {object} dragleaveEvt объект события
+     *
+     */
     function onPhotoDragleave(dragleaveEvt) {
       dragleaveEvt.target.style.opacity = '';
       dragleaveEvt.preventDefault();
     }
+    // добавляем обработчик собития dragover для блока с фотографиями
     photoContainer.addEventListener('dragover', onPhotoDragover);
+    // добавляем обработчик собития drop для блока с фотографиями
     photoContainer.addEventListener('drop', onPhotoDrop);
+    // добавляем обработчик собития dragleave для блока с фотографиями
     photoContainer.addEventListener('dragleave', onPhotoDragleave);
   }
-
+  // добавляем обработчик события change для поля загрузки фотографий
   photosChooser.addEventListener('change', function () {
     var files = photosChooser.files;
-
     addPhotos(files);
   }, false);
-
+  // добавляем обработчик события dragover для дропзоны при перетаскивании фотографий
   photosDropZone.addEventListener('dragover', function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
     evt.dataTransfer.dropEffect = 'copy';
-    photosDropZone.style.backgroundColor = '#dadada';
+    photosDropZone.style.backgroundColor = DragAndDropStyle.PHOTOS_DRAGOVER_BACKGROUND;
   }, false);
-
+  // добавляем обработчик события dragleave для дропзоны при перетаскивании фотографий
   photosDropZone.addEventListener('dragleave', function (evt) {
     evt.preventDefault();
     photosDropZone.style.backgroundColor = '';
   }, false);
-
+  // добавляем обработчик события drop для дропзоны при перетаскивании фотографий
   photosDropZone.addEventListener('drop', function (evt) {
     var files = evt.dataTransfer.files;
-
     photosDropZone.style.backgroundColor = '';
     evt.stopPropagation();
     evt.preventDefault();
     addPhotos(files);
   }, false);
-
+  // добавляем обработчик события dragstart для блока с фотографиями
   photoContainer.addEventListener('dragstart', onPhotoDragAndDrop, false);
 
   window.photos = {

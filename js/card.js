@@ -5,6 +5,7 @@
     CARD_TEMPLATE: '#card',
     CARD: '.map__card',
     CARD_LOCATION: '.map__filters-container',
+    CLOSE_CARD: '.popup__close',
 
     AVATAR: '.popup__avatar',
     TITLE: '.popup__title',
@@ -45,6 +46,15 @@
     conditioner: 'Кондиционер'
   };
   var map = document.querySelector(Selector.MAP);
+  /**
+   * добавляет событие esc
+   * @param {object} evt объект события
+   *
+   */
+  function onEscPress(evt) {
+    evt.preventDefault();
+    window.util.isEscEvent(evt, removeCard);
+  }
   /**
    * получает описание вместимости жилья
    *
@@ -122,6 +132,7 @@
     var location = document.querySelector(Selector.CARD_LOCATION);
     var element = template.cloneNode(true);
     var fragment = document.createDocumentFragment();
+    var closeButton = element.querySelector(Selector.CLOSE_CARD);
 
     element.querySelector(Selector.AVATAR).src = object.author.avatar;
     element.querySelector(Selector.TITLE).textContent = object.offer.title;
@@ -133,6 +144,10 @@
     getFeaturesList(object.offer.features, element);
     element.querySelector(Selector.DESCRIPTION).textContent = object.offer.description;
     getPhotosList(object.offer.photos, element);
+    // добавляем событие keydown при отрисовке карты (закрывает карту при нажатии esc)
+    document.addEventListener('keydown', onEscPress);
+    // добавляем событие click при отрисовке карты (закрывает карту при нажатии esc)
+    closeButton.addEventListener('click', removeCard);
 
     fragment.appendChild(element);
     map.insertBefore(fragment, location);
@@ -146,6 +161,8 @@
     if (card !== null) {
       card.remove();
     }
+    // удаляем событие keydown при закрытии карты
+    document.removeEventListener('keydown', onEscPress);
   }
   window.card = {
     remove: removeCard,

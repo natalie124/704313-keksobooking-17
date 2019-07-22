@@ -42,7 +42,6 @@
     window.util.removeDisabled(filterItems);
     window.util.removeDisabled(formItems);
     window.backend.load(onLoad, onError);
-    // mainPin.removeAttribute('tabindex');
   }
   /**
    * скрывает букинг
@@ -156,9 +155,9 @@
     window.pins.draw(data);
     window.onFilter(data);
   }
-
+  // скрываем букинг
   hideBooking();
-
+  // добавляем события submit для формы
   form.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(form), onSuccess, onError);
     evt.preventDefault();

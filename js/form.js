@@ -25,7 +25,7 @@
   var minPrice = adForm.querySelector(Selector.MIN_PRICE); // минимальная цена
   var rooms = adForm.querySelector(Selector.ROOMS); // количество комнат
   var capacity = adForm.querySelector(Selector.CAPACITY); // количество гостей
-  var address = document.querySelector(Selector.ADDRESS);
+  var address = document.querySelector(Selector.ADDRESS); // адрес жилья
   /**
    * возвращает форму подачи объявления в первоначальное состояние
    *
@@ -86,6 +86,7 @@
     var message = checkCapacity(roomsValue, capacityValue);
     capacity.setCustomValidity(message);
   });
+
   window.form = {
     clean: cleanAdForm
   };

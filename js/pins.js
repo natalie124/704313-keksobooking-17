@@ -4,8 +4,7 @@
     PINS: '.map__pins',
     PIN_TEMPLATE: '#pin',
     PIN: '.map__pin',
-    OFFER_PINS: '.map__pin:not(.map__pin--main)',
-    CLOSE_CARD: '.popup__close'
+    OFFER_PINS: '.map__pin:not(.map__pin--main)'
   };
 
   var QUANTITY = 5; // количество пинов для отрисовки
@@ -20,34 +19,37 @@
   function getPin(object) {
     var template = document.querySelector(Selector.PIN_TEMPLATE).content.querySelector(Selector.PIN);
     var element = template.cloneNode(true);
-
+    /**
+     * добавляет событие фокуса для метки
+     * @param {object} evt объект события
+     *
+     */
+    function onPinFocus(evt) {
+      window.util.addClass(evt.target, 'map__pin--active');
+    }
+    /**
+     * добавляет событие потери фокуса для метки
+     * @param {object} evt объект события
+     *
+     */
+    function onPinBlur(evt) {
+      window.card.remove();
+      window.util.removeClass(evt.target, 'map__pin--active');
+    }
     element.querySelector('img').src = object.author.avatar;
     element.querySelector('img').alt = object.offer.type;
     element.style.left = object.location.x + 'px';
     element.style.top = object.location.y + 'px';
-    element.setAttribute('tabindex', '1');
-
-
+    element.setAttribute('tabindex', '0');
+    // добавляем обработчик события 'click' для метки
     element.addEventListener('click', function () {
       window.card.remove();
       window.card.draw(object);
-
-      var closeButton = document.querySelector(Selector.CLOSE_CARD);
-
-      function onEscPress(evt) {
-        evt.preventDefault();
-        window.util.isEscEvent(evt, window.card.remove);
-        document.removeEventListener('keydown', onEscPress);
-      }
-
-      closeButton.addEventListener('click', function () {
-        window.card.remove();
-        document.removeEventListener('keydown', onEscPress);
-      });
-
-      document.addEventListener('keydown', onEscPress);
-
     });
+    // добавляем событие 'focus' для метки
+    element.addEventListener('focus', onPinFocus, true);
+    // добавляем событие 'blur' для метки
+    element.addEventListener('blur', onPinBlur, true);
 
     return element;
   }
