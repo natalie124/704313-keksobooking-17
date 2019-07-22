@@ -20,7 +20,8 @@
     A: 65,
     W: 88,
     D: 68,
-    S: 83
+    S: 83,
+    TAB: 9
   };
   var MOVE_STEP = 5;
 
@@ -28,7 +29,11 @@
   var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
   var form = document.querySelector(Selector.FORM); // блок с формой
   var address = form.querySelector(Selector.ADDRESS); // поле с адресом метки
-
+  /**
+   * проверяет позицию метки на карте
+   *
+   * @return {object} объект с координатами метки
+   */
   function checkPinPosition() {
     var pinLeft = mainPin.offsetLeft;
     var pinTop = mainPin.offsetTop;
@@ -125,10 +130,10 @@
       if (keyCode === code.RIGHT || keyCode === code.D) {
         mainPinLeft += MOVE_STEP;
       }
-      if (keyCode === code.UP || keyCode === code.W) {
+      if ((keyCode === code.UP || keyCode === code.W) && ((mainPinTop + mainPin.offsetHeight) > PIN_Y_MIN)) {
         mainPinTop -= MOVE_STEP;
       }
-      if (keyCode === code.DOWN || keyCode === code.S) {
+      if ((keyCode === code.DOWN || keyCode === code.S) && ((mainPinTop + mainPin.offsetHeight) < PIN_Y_MAX)) {
         mainPinTop += MOVE_STEP;
       }
 
@@ -146,7 +151,7 @@
    *
    */
   function onMainPinTabPress(evt) {
-    if (evt.keyCode === 9 && evt.target === mainPin) {
+    if (evt.keyCode === code.TAB && evt.target === mainPin) {
       mainPin.blur();
     }
   }

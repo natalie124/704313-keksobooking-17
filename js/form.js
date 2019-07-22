@@ -59,35 +59,71 @@
     }
     return message;
   }
-  // добавляем событие change для поля выбора типа жилья
-  type.addEventListener('change', function (evt) {
+  /**
+   * добавляет событие change для поля выбора типа жилья
+   *
+   * @param {object} evt количество комнат
+   *
+   */
+  function onTypeChange(evt) {
     minPrice.min = window.card.types[evt.target.value].price;
     minPrice.placeholder = window.card.types[evt.target.value].price;
-  });
-  // добавляем событие change для поля дата заезда
-  timein.addEventListener('change', function (evt) {
+  }
+  /**
+   * добавляет событие change для поля выбора даты заезда
+   *
+   * @param {object} evt количество комнат
+   *
+   */
+  function onTimeinChange(evt) {
     timeout.value = evt.target.value;
-  });
-  // добавляем событие change для поля дата выезда
-  timeout.addEventListener('change', function (evt) {
+  }
+  /**
+   * добавляет событие change для поля выбора даты выезда
+   *
+   * @param {object} evt количество комнат
+   *
+   */
+  function onTimeoutChange(evt) {
     timein.value = evt.target.value;
-  });
-  // добавляем событие change для поля выбора количества гостей
-  capacity.addEventListener('change', function (evt) {
+  }
+  /**
+   * добавляет событие change для поля выбора количества гостей
+   *
+   * @param {object} evt количество комнат
+   *
+   */
+  function onCapacityChange(evt) {
     var roomsValue = parseInt(rooms.value, 10);
     var capacityValue = parseInt(evt.target.value, 10);
     var message = checkCapacity(roomsValue, capacityValue);
     capacity.setCustomValidity(message);
-  });
-  // добавляем событие change для поля выбора количества комнат
-  rooms.addEventListener('change', function (evt) {
+  }
+  /**
+   * добавляет событие change для поля выбора количества комнат
+   *
+   * @param {object} evt количество комнат
+   *
+   */
+  function onRoomChange(evt) {
     var roomsValue = parseInt(evt.target.value, 10);
     var capacityValue = parseInt(capacity.value, 10);
     var message = checkCapacity(roomsValue, capacityValue);
     capacity.setCustomValidity(message);
-  });
+  }
+  // добавляем событие change для поля выбора типа жилья
+  type.addEventListener('change', onTypeChange);
+  // добавляем событие change для поля дата заезда
+  timein.addEventListener('change', onTimeinChange);
+  // добавляем событие change для поля дата выезда
+  timeout.addEventListener('change', onTimeoutChange);
+  // добавляем событие change для поля выбора количества гостей
+  capacity.addEventListener('change', onCapacityChange);
+  // добавляем событие change для поля выбора количества комнат
+  rooms.addEventListener('change', onRoomChange);
 
   window.form = {
     clean: cleanAdForm
   };
+
 })();

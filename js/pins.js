@@ -1,5 +1,8 @@
 'use strict';
 (function () {
+  var ClassName = {
+    PIN_ACTIVE: 'map__pin--active'
+  };
   var Selector = {
     PINS: '.map__pins',
     PIN_TEMPLATE: '#pin',
@@ -25,7 +28,7 @@
      *
      */
     function onPinFocus(evt) {
-      window.util.addClass(evt.target, 'map__pin--active');
+      window.util.addClass(evt.target, ClassName.PIN_ACTIVE);
     }
     /**
      * добавляет событие потери фокуса для метки
@@ -33,8 +36,7 @@
      *
      */
     function onPinBlur(evt) {
-      window.card.remove();
-      window.util.removeClass(evt.target, 'map__pin--active');
+      window.util.removeClass(evt.target, ClassName.PIN_ACTIVE);
     }
     element.querySelector('img').src = object.author.avatar;
     element.querySelector('img').alt = object.offer.type;
@@ -60,11 +62,9 @@
    * @return {object} добавляем фрагмент с метками объявлений на страницу
    */
   function drawPins(data) {
-
-    var quantity = data.length >= QUANTITY ? QUANTITY : data.length;
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < quantity; i++) {
+    for (var i = 0; i < Math.min(data.length, QUANTITY); i++) {
       fragment.appendChild(getPin(data[i]));
     }
     return pins.appendChild(fragment);
