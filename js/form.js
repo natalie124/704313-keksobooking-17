@@ -1,7 +1,8 @@
 'use strict';
-
 (function () {
   var Selector = {
+    MAIN_PIN: '.map__pin--main',
+
     FORM: '.ad-form',
     PRICE: '#price',
     TYPE: '#type',
@@ -10,14 +11,34 @@
     MIN_PRICE: '#price',
     ROOMS: '#room_number',
     CAPACITY: '#capacity',
+    ADDRESS: '#address'
   };
-  var form = document.querySelector(Selector.FORM); // блок с формой
-  var type = form.querySelector(Selector.TYPE); // поле тип жилья
-  var timein = form.querySelector(Selector.TIMEIN); // поле дата заезда
-  var timeout = form.querySelector(Selector.TIMEOUT); // поле дата выезда
-  var minPrice = form.querySelector(Selector.MIN_PRICE); // минимальная цена
-  var rooms = form.querySelector(Selector.ROOMS); // количество комнат
-  var capacity = form.querySelector(Selector.CAPACITY); // количество гостей
+  var StartCoordOfMainPin = {
+    X: 570,
+    Y: 375
+  };
+  var mainPin = document.querySelector(Selector.MAIN_PIN); // блок с меткой
+  var adForm = document.querySelector(Selector.FORM); // блок с формой
+  var type = adForm.querySelector(Selector.TYPE); // поле тип жилья
+  var timein = adForm.querySelector(Selector.TIMEIN); // поле дата заезда
+  var timeout = adForm.querySelector(Selector.TIMEOUT); // поле дата выезда
+  var minPrice = adForm.querySelector(Selector.MIN_PRICE); // минимальная цена
+  var rooms = adForm.querySelector(Selector.ROOMS); // количество комнат
+  var capacity = adForm.querySelector(Selector.CAPACITY); // количество гостей
+  var address = document.querySelector(Selector.ADDRESS); // адрес жилья
+  /**
+   * возвращает форму подачи объявления в первоначальное состояние
+   *
+   */
+  function cleanAdForm() {
+    adForm.reset();
+    mainPin.style.left = StartCoordOfMainPin.X + 'px';
+    mainPin.style.top = StartCoordOfMainPin.Y + 'px';
+    address.value = window.util.getCoordinates(mainPin, 0, 0);
+    minPrice.placeholder = window.card.types[type.value].price;
+    window.avatar.reset();
+    window.photos.remove();
+  }
   /**
    * проверяет вместимость жилья
    *
@@ -56,7 +77,6 @@
     var roomsValue = parseInt(rooms.value, 10);
     var capacityValue = parseInt(evt.target.value, 10);
     var message = checkCapacity(roomsValue, capacityValue);
-
     capacity.setCustomValidity(message);
   });
   // добавляем событие change для поля выбора количества комнат
@@ -64,7 +84,10 @@
     var roomsValue = parseInt(evt.target.value, 10);
     var capacityValue = parseInt(capacity.value, 10);
     var message = checkCapacity(roomsValue, capacityValue);
-
     capacity.setCustomValidity(message);
   });
+
+  window.form = {
+    clean: cleanAdForm
+  };
 })();

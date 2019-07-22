@@ -1,5 +1,4 @@
 'use strict';
-
 (function () {
   var ClassName = {
     FORM_DISABLED: 'ad-form--disabled',
@@ -9,13 +8,11 @@
     MAIN: 'main',
 
     MAP: '.map',
-
     MAIN_PIN: '.map__pin--main',
 
     FORM: '.ad-form',
     FORM_ITEM: 'fieldset',
     RESET: '.ad-form__reset',
-    ADDRESS: '#address',
 
     FILTER: '.map__filters',
     FILTER_ITEM: '.map__filter',
@@ -31,7 +28,6 @@
   var mainPin = map.querySelector(Selector.MAIN_PIN); // блок с меткой
   var form = document.querySelector(Selector.FORM); // блок с формой
   var formItems = document.querySelectorAll(Selector.FORM_ITEM); // блоки с элементами форм на странице
-  var address = document.querySelector(Selector.ADDRESS);
   var reset = form.querySelector(Selector.RESET);
   var filter = map.querySelector(Selector.FILTER); // блок с фильтром
   var filterItems = filter.querySelectorAll(Selector.FILTER_ITEM); // блоки с элементами фильтра
@@ -59,8 +55,9 @@
     window.util.addDisabled(filterItems);
     window.pins.remove();
     window.card.remove();
-    form.reset();
-    address.value = window.util.getCoordinates(mainPin, 0, 0);
+    filter.reset();
+    window.form.clean();
+    mainPin.setAttribute('tabindex', '0');
   }
   /**
    * выводит сообщение об ошибке, если ошибка возникла
@@ -103,7 +100,6 @@
       evt.preventDefault();
       window.util.isEscEvent(evt, removeError);
     }
-
     document.addEventListener('click', removeError);
     document.addEventListener('keydown', onEnterPress);
     document.addEventListener('keydown', onEscPress);
@@ -124,7 +120,6 @@
      */
     function removeSuccess() {
       success.remove();
-
       document.removeEventListener('click', removeSuccess);
       document.removeEventListener('keydown', onEscPress);
       document.removeEventListener('keydown', onEnterPress);
@@ -160,18 +155,9 @@
     window.pins.draw(data);
     window.onFilter(data);
   }
-  /**
-   * обработчик события keydown (для кнопки очистить)
-   *
-   * @param {object} evt объект события
-   */
-  function onResetEnterPress(evt) {
-    evt.preventDefault();
-    window.util.isEnterEvent(evt, hideBooking);
-  }
-
+  // скрываем букинг
   hideBooking();
-
+  // добавляем события submit для формы
   form.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(form), onSuccess, onError);
     evt.preventDefault();
@@ -179,11 +165,13 @@
   // добавляем событие очистки формы клику на кнопке 'очистить'
   reset.addEventListener('click', hideBooking);
   // добавляем событие очистки формы нажатию Enter на кнопке 'очистить'
-  reset.addEventListener('keydown', onResetEnterPress);
+  reset.addEventListener('keydown', function (evt) {
+    evt.preventDefault();
+    window.util.isEnterEvent(evt, hideBooking);
+  });
 
   window.map = {
     activate: activateBooking,
-    hide: hideBooking,
-    onError: onError
+    hide: hideBooking
   };
 })();

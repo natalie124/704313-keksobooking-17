@@ -1,5 +1,4 @@
 'use strict';
-
 (function () {
   var Code = {
     ENTER: 13,
@@ -122,5 +121,4 @@
       }
     }
   };
-
 })();
