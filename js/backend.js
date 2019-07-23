@@ -4,6 +4,15 @@
     GET: 'https://js.dump.academy/keksobooking/data',
     POST: 'https://js.dump.academy/keksobooking'
   };
+  var ErrorMessage = {
+    500: 'Ошибка 500: Internal Server Error — произошла внутренняя ошибка',
+    404: 'Ошибка 404: Not Found — запрашиваемый ресурс не найден',
+    400: 'Ошибка 400: Bad Request — неправильный запрос',
+    301: 'Ошибка 301: Moved Permanently — ресурс переехал навсегда',
+    307: 'Ошибка 307: Temporary Redirect — ресурс переехал временно',
+    DEFAULT: 'Ошибка загрузки объявления'
+  };
+
   var TIMEOUT = 10000;
   var OK_STATUS = 200;
   /**
@@ -13,20 +22,7 @@
    * @return {string} строка с сообщением об ошибке
    */
   function getErrorMesage(error) {
-    switch (error) {
-      case 500:
-        return 'Ошибка ' + error + ': ' + 'Internal Server Error — произошла внутренняя ошибка';
-      case 404:
-        return 'Ошибка ' + error + ': ' + 'Not Found — запрашиваемый ресурс не найден';
-      case 400:
-        return 'Ошибка ' + error + ': ' + 'Bad Request — неправильный запрос';
-      case 301:
-        return 'Ошибка ' + error + ': ' + 'Moved Permanently — ресурс переехал навсегда';
-      case 307:
-        return 'Ошибка ' + error + ': ' + 'Temporary Redirect — ресурс переехал временно';
-      default:
-        return 'Ошибка загрузки объявления';
-    }
+    return ErrorMessage[error] ? ErrorMessage[error] : ErrorMessage.DEFAULT;
   }
   /**
    * создает запрос на сервер
