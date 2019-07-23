@@ -52,7 +52,7 @@
    * @return {string} значение выбранного фильтра
    */
   function checkChosenRoomsOrGuests(roomsOrGuests, value) {
-    return (roomsOrGuests === parseInt(value, 10)) || (value === ALL_VALUE);
+    return (roomsOrGuests === parseInt(value, 10) || value === ALL_VALUE);
   }
   /**
    * проверяет особенности жилья
@@ -87,6 +87,5 @@
       });
     });
   }
-
   window.onFilter = onFilter;
 })();

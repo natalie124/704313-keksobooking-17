@@ -80,16 +80,6 @@
       error.remove();
       document.removeEventListener('click', removeError);
       document.removeEventListener('keydown', onEscPress);
-      document.removeEventListener('keydown', onEnterPress);
-    }
-    /**
-     * обработчик события Enter press
-     * @param {object} evt объект события
-     *
-     */
-    function onEnterPress(evt) {
-      evt.preventDefault();
-      window.util.isEnterEvent(evt, removeError);
     }
     /**
      * обработчик события Esc press
@@ -101,7 +91,6 @@
       window.util.isEscEvent(evt, removeError);
     }
     document.addEventListener('click', removeError);
-    document.addEventListener('keydown', onEnterPress);
     document.addEventListener('keydown', onEscPress);
   }
   /**
@@ -122,16 +111,6 @@
       success.remove();
       document.removeEventListener('click', removeSuccess);
       document.removeEventListener('keydown', onEscPress);
-      document.removeEventListener('keydown', onEnterPress);
-    }
-    /**
-     * обработчик события Enter press
-     * @param {object} evt объект события
-     *
-     */
-    function onEnterPress(evt) {
-      evt.preventDefault();
-      window.util.isEnterEvent(evt, removeSuccess);
     }
     /**
      * обработчик события Esc press
@@ -143,7 +122,6 @@
       window.util.isEscEvent(evt, removeSuccess);
     }
     document.addEventListener('click', removeSuccess);
-    document.addEventListener('keydown', onEnterPress);
     document.addEventListener('keydown', onEscPress);
   }
   /**
