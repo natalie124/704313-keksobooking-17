@@ -47,17 +47,18 @@
    * @return {string} сообщение о неверно выбранной вместимости
    */
   function checkCapacity(numberOfRooms, numberOfGuests) {
-    var message = '';
-    if (numberOfRooms === 100 && numberOfGuests !== 0) {
-      message = '100 комнат — «не для гостей»';
-    } else if (numberOfRooms === 1 && numberOfGuests !== 1) {
-      message = '1 комната — «для 1 гостя»';
-    } else if (numberOfRooms === 2 && (numberOfGuests > 2 || numberOfGuests === 0)) {
-      message = '2 комнаты — «для 2 гостей» или «для 1 гостя»';
-    } else if (numberOfRooms === 3 && (numberOfGuests > 3 || numberOfGuests === 0)) {
-      message = '3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»';
+    switch (true) {
+      case (numberOfRooms === 100 && numberOfGuests !== 0):
+        return '100 комнат — «не для гостей»';
+      case (numberOfRooms === 1 && numberOfGuests !== 1):
+        return '1 комната — «для 1 гостя»';
+      case (numberOfRooms === 2 && (numberOfGuests > 2 || numberOfGuests === 0)):
+        return '2 комнаты — «для 2 гостей» или «для 1 гостя»';
+      case (numberOfRooms === 3 && (numberOfGuests > 3 || numberOfGuests === 0)):
+        return '3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»';
+      default:
+        return '';
     }
-    return message;
   }
   /**
    * добавляет событие change для поля выбора типа жилья
